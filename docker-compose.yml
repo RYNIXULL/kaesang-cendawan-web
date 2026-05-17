@@ -1,0 +1,65 @@
+# Toko Online — stack dasar (MySQL + API + frontend)
+#
+# Development (default):
+#   docker compose up --build
+#
+# Staging:
+#   cp docker/env/staging.env.example docker/env/staging.env  # isi secret
+#   docker compose -f docker-compose.yml -f docker-compose.staging.yml up --build -d
+#
+# Production:
+#   cp docker/env/production.env.example docker/env/production.env
+#   docker compose -f docker-compose.yml -f docker-compose.production.yml up --build -d
+
+name: toko-online
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    env_file:
+      - ./docker/env/mysql.env
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "${MYSQL_PUBLISH_PORT:-3306}:3306"
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+
+  backend:
+    build:
+      context: ./backend-jamur
+      dockerfile: Dockerfile
+      target: ${BACKEND_BUILD_TARGET:-development}
+    restart: unless-stopped
+    environment:
+      - SEED_ADMIN_USERNAME=admin
+      - SEED_ADMIN_PASSWORD=JamurSegar2026!
+    env_file:
+      - ./docker/env/${DEPLOY_ENV:-development}.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PUBLISH_PORT:-5000}:5000"
+    entrypoint: ['/sbin/tini', '--', '/app/docker-entrypoint.sh']
+    command: ['node', 'server.js']
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:5000}
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PUBLISH_PORT:-8080}:80"
+
+volumes:
+  mysql_data:

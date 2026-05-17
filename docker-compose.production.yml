@@ -1,0 +1,15 @@
+# Override untuk lingkungan production
+services:
+  mysql:
+    ports: []
+
+  backend:
+    build:
+      target: production
+    env_file:
+      - ./docker/env/production.env
+
+  frontend:
+    build:
+      args:
+        VITE_API_URL: ${VITE_API_URL:-https://toko.example.com}

@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaesang Cendawan - Jamur Lokal, Rasa Global</title>
+
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <style>
+        /* CSS Variables */
+        :root {
+            --hijau-muda: #e8f5e9;
+            --hijau-medium: #81c784;
+            --hijau-tua: #2e7d32;
+            --cokelat-muda: #efebe9;
+            --cokelat-medium: #a1887f;
+            --cokelat-tua: #5d4037;
+            --warna-teks: #333333;
+            --warna-teks-terang: #666666;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            color: var(--warna-teks);
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            color: var(--cokelat-tua);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header & Navigation */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-img {
+            width: 80px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+        }
+
+        .logo-img img {
+            width: auto;
+            height: 60px;
+            max-width: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            color: var(--hijau-tua);
+        }
+
+        .logo-text p {
+            font-size: 0.8rem;
+            color: var(--cokelat-medium);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--warna-teks);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--hijau-tua);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--hijau-tua);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding-top: 140px;
+            background: linear-gradient(to bottom, var(--hijau-muda), white);
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .hero-text h2 {
+            font-size: 3rem;
+            color: var(--hijau-tua);
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            color: var(--warna-teks-terang);
+            margin-bottom: 30px;
+        }
+
+        .hero-image {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            height: 400px;
+            background-image: url('kombong.jpeg');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Button Styles */
+        .btn {
+            display: inline-block;
+            background-color: var(--hijau-tua);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid var(--hijau-tua);
+        }
+
+        .btn:hover {
+            background-color: transparent;
+            color: var(--hijau-tua);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--hijau-tua);
+            border: 2px solid var(--hijau-tua);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--hijau-tua);
+            color: white;
+        }
+
+        /* Section Styling */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--cokelat-tua);
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: var(--warna-teks-terang);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Products Section */
+        .products {
+            background-color: white;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .product-content {
+            padding: 20px;
+        }
+
+        .product-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--cokelat-tua);
+        }
+
+        .product-content p {
+            color: var(--warna-teks-terang);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+
+        .price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--hijau-tua);
+            margin-bottom: 15px;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            background-color: var(--cokelat-muda);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: white;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .gallery-img {
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .gallery-img:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-overlay i {
+            color: white;
+            font-size: 2rem;
+        }
+
+        .gallery-caption {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: white;
+        }
+
+        .gallery-caption h4 {
+            font-size: 1.2rem;
+            color: var(--cokelat-tua);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .gallery-caption p {
+            color: var(--warna-teks-terang);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Blog Section */
+        .blog {
+            background-color: white;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .blog-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .blog-img {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .blog-content {
+            padding: 20px;
+        }
+
+        .blog-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--cokelat-tua);
+        }
+
+        .blog-content p {
+            color: var(--warna-teks-terang);
+            margin-bottom: 15px;
+        }
+
+        .read-more {
+            color: var(--hijau-tua);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        /* Contact Section */
+        .contact {
+            background-color: var(--hijau-muda);
+        }
+
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+        }
+
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--cokelat-tua);
+        }
+
+        .contact-info p {
+            margin-bottom: 20px;
+            color: var(--warna-teks-terang);
+        }
+
+        .contact-details {
+            margin-top: 30px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: nowrap;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--hijau-medium);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            min-width: 50px;
+        }
+
+        .contact-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .contact-text h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        /* Map Container */
+        .map-container {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            height: 400px;
+            position: relative;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            min-height: 300px;
+        }
+
+        .map-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-overlay a {
+            background-color: var(--hijau-tua);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .map-overlay a:hover {
+            background-color: var(--cokelat-tua);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--cokelat-tua);
+            color: white;
+            padding: 50px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo .logo-text h1 {
+            color: white;
+        }
+
+        .footer-logo p {
+            margin-top: 15px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .footer-links h3,
+        .footer-social h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            background-color: var(--hijau-tua);
+            transform: translateY(-5px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Modal Resep Styling */
+        .resep-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background-color: white;
+            max-width: 800px;
+            margin: 50px auto;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .modal-header {
+            background-color: var(--hijau-tua);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: white;
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .resep-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .bahan-list,
+        .cara-list {
+            background-color: var(--hijau-muda);
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .bahan-list h4,
+        .cara-list h4 {
+            color: var(--hijau-tua);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .bahan-list ul,
+        .cara-list ol {
+            padding-left: 20px;
+        }
+
+        .bahan-list li,
+        .cara-list li {
+            margin-bottom: 10px;
+            color: var(--warna-teks);
+        }
+
+        .tips {
+            background-color: var(--cokelat-muda);
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .tips h4 {
+            color: var(--cokelat-tua);
+            margin-bottom: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-text h2 {
+                font-size: 2.5rem;
+            }
+
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                padding: 20px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero-text h2 {
+                font-size: 2rem;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .logo-img {
+                width: 60px;
+                height: 45px;
+            }
+
+            .logo-img img {
+                height: 45px;
+            }
+
+            .logo-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo-text p {
+                font-size: 0.7rem;
+            }
+
+            .modal-content {
+                margin: 20px auto;
+            }
+
+            .modal-body {
+                padding: 20px;
+            }
+
+            .resep-info {
+                grid-template-columns: 1fr;
+            }
+
+            .gallery-img {
+                height: 200px;
+            }
+
+            .gallery-caption {
+                padding: 15px;
+            }
+
+            .gallery-caption h4 {
+                font-size: 1.1rem;
+            }
+
+            .gallery-caption p {
+                font-size: 0.9rem;
+            }
+
+            /* PERBAIKAN UNTUK MAP DI MOBILE */
+            .map-container {
+                height: 350px;
+                /* Lebih rendah untuk mobile */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .logo-img {
+                width: 50px;
+                height: 40px;
+            }
+
+            .logo-img img {
+                height: 40px;
+            }
+
+            .logo {
+                gap: 10px;
+            }
+
+            /* Map lebih kecil untuk device sangat kecil */
+            .map-container {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <div class="logo-img">
+                        <img id="logo-img" src="KAESANG CENDAWAN.png" alt="Kaesang Cendawan Logo">
+                    </div>
+                    <div class="logo-text">
+                        <h1>Kaesang Cendawan</h1>
+                        <p>Jamur Lokal, Rasa Global</p>
+                    </div>
+                </div>
+
+                <ul class="nav-links">
+                    <li><a href="#home">Beranda</a></li>
+                    <li><a href="#products">Produk</a></li>
+                    <li><a href="#gallery">Galeri</a></li>
+                    <li><a href="#blog">Resep</a></li>
+                    <li><a href="#contact">Kontak</a></li>
+                </ul>
+
+                <div class="mobile-menu-btn">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h2>Jamur Lokal, Rasa Global</h2>
+                    <p style="text-align: justify;">Berawal dari tanah subur Lampung, Kaesang Cendawan tumbuh dengan
+                        semangat menghadirkan jamur segar berkualitas yang kami harap
+                        mampu menembus pasar global. Dengan metode budidaya alami, ramah lingkungan, dan penuh dedikasi,
+                        kami tidak hanya menawarkan produk pangan, tetapi juga membawa cerita tentang keberlanjutan,
+                        inovasi, dan kebanggaan lokal yang mendunia.</p>
+                    <a href="#products" class="btn">Lihat Produk Kami</a>
+                </div>
+                <div class="hero-image"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products" id="products">
+        <div class="container">
+            <div class="section-title">
+                <h2>Produk Kami</h2>
+                <p>Berbagai jenis jamur segar yang kami hasilkan dengan kualitas terbaik</p>
+            </div>
+
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-img"
+                        style="background-image: url('https://www.bengkulutoday.com/sites/default/files/article/2024-09/WhatsApp%20Image%202024-09-24%20at%2011.00.31.jpeg')">
+                    </div>
+                    <div class="product-content">
+                        <h3>Jamur Tiram Segar</h3>
+                        <p>Jamur tiram dengan tekstur lembut, rasa gurih, dan kandungan gizi tinggi. Cocok untuk
+                            berbagai masakan seperti tumisan, sup, atau digoreng tepung.</p>
+                        <div class="price">Rp 25.000 / 500g</div>
+                        <a href="#contact" class="btn btn-outline">Pesan Sekarang</a>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img"
+                        style="background-image: url('https://1.bp.blogspot.com/-QJ8g_l4g7PU/Upncps5HvGI/AAAAAAAAAqM/lGAIvweoICA/s1600/tiram-kuning.jpg')">
+                    </div>
+                    <div class="product-content">
+                        <h3>Jamur Tiram Coklat</h3>
+                        <p>Jamur tiram dengan tekstur lembut, rasa gurih, dan kandungan gizi tinggi. Cocok untuk
+                            berbagai masakan seperti tumisan, sup, atau digoreng tepung.</p>
+                        <div class="price">Rp 25.000 / 500g</div>
+                        <a href="#contact" class="btn btn-outline">Pesan Sekarang</a>
+                    </div>
+                </div>
+
+                <div class="product-card">
+                    <div class="product-img"
+                        style="background-image: url('https://images.ecency.com/0x0/https://img.esteem.ws/cyq98j2wmd.jpg')">
+                    </div>
+                    <div class="product-content">
+                        <h3>Jamur Jerami Segar</h3>
+                        <p>Jamur jerami dengan bentuk bulat dan tekstur kenyal yang khas. Memiliki rasa manis alami dan
+                            sangat cocok untuk capcay, sup, atau tumisan.</p>
+                        <div class="price">Rp 30.000 / 500g</div>
+                        <a href="#contact" class="btn btn-outline">Pesan Sekarang</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery" id="gallery">
+        <div class="container">
+            <div class="section-title">
+                <h2>Galeri Budidaya</h2>
+                <p>Proses budidaya jamur yang kami lakukan dengan perhatian dan dedikasi tinggi</p>
+            </div>
+
+            <!-- GALERI GRID DENGAN CAPTION -->
+            <div class="gallery-grid">
+                <!-- VIDEO ITEM dengan caption -->
+                <div class="gallery-item">
+                    <div class="gallery-img video" data-video="https://www.youtube.com/embed/O67I1cJFROw"
+                        style="background-image: url('https://img.youtube.com/vi/O67I1cJFROw/hqdefault.jpg')">
+                        <div class="gallery-overlay">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                    </div>
+                    <div class="gallery-caption">
+                        <h4>Proses Budidaya</h4>
+                        <p>Video proses budidaya jamur jerami menggunakan bahan tankos sawit</p>
+                    </div>
+                </div>
+
+                <!-- FOTO 1 dengan caption -->
+                <div class="gallery-item">
+                    <div class="gallery-img" style="background-image: url('jamur\ 1.avifile.io/preview/jamur-1.jpg')">
+                        <div class="gallery-overlay">
+                            <i class="fas fa-search-plus"></i>
+                        </div>
+                    </div>
+                    <div class="gallery-caption">
+                        <h4>Greenhouse Jamur</h4>
+                        <p>Rumah kaca tempat budidaya jamur dengan suhu terkontrol</p>
+                    </div>
+                </div>
+
+                <!-- FOTO 2 dengan caption -->
+                <div class="gallery-item">
+                    <div class="gallery-img"
+                        style="background-image: url('https://asset.kompas.com/crops/2WymR8Oox8KPTqCnx9_vIqLcgnI=/0x0:1000x667/750x500/data/photo/2022/01/28/61f36ce16c333.jpg')">
+                        <div class="gallery-overlay">
+                            <i class="fas fa-search-plus"></i>
+                        </div>
+                    </div>
+                    <div class="gallery-caption">
+                        <h4>Media Tanam</h4>
+                        <p>Serbuk kayu sebagai media tumbuh jamur yang steril</p>
+                    </div>
+                </div>
+
+                <!-- FOTO 3 dengan caption -->
+                <div class="gallery-item">
+                    <div class="gallery-img"
+                        style="background-image: url('https://distan.bulelengkab.go.id/uploads/konten/cara-budidaya-jamur-tiram-putih-95.jpg')">
+                        <div class="gallery-overlay">
+                            <i class="fas fa-search-plus"></i>
+                        </div>
+                    </div>
+                    <div class="gallery-caption">
+                        <h4>Panen Jamur</h4>
+                        <p>Jamur tiram siap panen dengan kualitas terbaik</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog" id="blog">
+        <div class="container">
+            <div class="section-title">
+                <h2>Resep Olahan Jamur</h2>
+                <p>Inspirasi memasak dengan jamur tiram dan jamur jerami dari Kaesang Cendawan</p>
+            </div>
+
+            <div class="blog-grid">
+                <div class="blog-card">
+                    <div class="blog-img"
+                        style="background-image: url('https://cdn.yummy.co.id/content-images/images/20230906/CXASt7Mti2I03X6aBhC4sYSRE86OqeUr-31363933393934333933d41d8cd98f00b204e9800998ecf8427e.jpg?x-oss-process=image/resize,w_388,h_388,m_fixed,x-oss-process=image/format,webp')">
+                    </div>
+                    <div class="blog-content">
+                        <h3>Tumis Jamur Tiram Saus Tiram</h3>
+                        <p>Resep praktis dengan jamur tiram yang ditumis dengan bawang, cabai, dan saus tiram. Cepat,
+                            sehat, dan penuh rasa umami.</p>
+                        <a href="#" class="read-more" data-resep="1">Baca Resep <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <div class="blog-img"
+                        style="background-image: url('https://img-global.cpcdn.com/recipes/fa4619c0e60e2851/1200x630cq70/photo.jpg')">
+                    </div>
+                    <div class="blog-content">
+                        <h3>Sup Jamur Jerami Ayam</h3>
+                        <p>Sup hangat dengan jamur jerami, potongan ayam, wortel, dan daun bawang. Sempurna untuk hari
+                            hujan atau saat kurang enak badan.</p>
+                        <a href="#" class="read-more" data-resep="2">Baca Resep <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <div class="blog-img"
+                        style="background-image: url('https://img-global.cpcdn.com/recipes/b38fe9a8583e1547/680x482cq70/jamur-tiram-crispy-foto-resep-utama.jpg')">
+                    </div>
+                    <div class="blog-content">
+                        <h3>Jamur Crispy Tepung</h3>
+                        <p>Jamur tiram atau jerami yang dibalut tepung rempah dan digoreng hingga crispy. Camilan sehat
+                            yang cocok untuk segala usia.</p>
+                        <a href="#" class="read-more" data-resep="3">Baca Resep <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="blog-card">
+                    <div class="blog-img"
+                        style="background-image: url('https://media.zcreators.id/crop/0x0:0x0/750x500/photo/indizone/2019/12/03/Q8saQy/t_5de617e1ab7f6.jpg')">
+                    </div>
+                    <div class="blog-content">
+                        <h3>Capcay Jamur Tiram & Jerami</h3>
+                        <p>Capcay lengkap dengan kombinasi jamur tiram dan jerami, ditambah sayuran segar lainnya. Menu
+                            lengkap dalam satu wajan.</p>
+                        <a href="#" class="read-more" data-resep="4">Baca Resep <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <div class="section-title">
+                <h2>Kontak & Lokasi</h2>
+                <p>Kunjungi kami di Lampung atau hubungi untuk pemesanan</p>
+            </div>
+
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>Kaesang Cendawan</h3>
+                    <p>Kami dengan senang hati melayani pemesanan jamur segar untuk kebutuhan rumah tangga, restoran,
+                        atau bisnis kuliner Anda.</p>
+
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Lokasi</h4>
+                                <p>Pakuan Sakti, Kec. Pakuan Ratu, Kabupaten Way Kanan, Lampung 34762</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Telepon/WhatsApp</h4>
+                                <p>+62 813 6907 9309</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Email</h4>
+                                <p>kaesangcendawan@gmail.com</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="contact-text">
+                                <h4>Jam Operasional</h4>
+                                <p>Senin - Sabtu: 08.00 - 17.00 WIB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="map-container">
+                    <div id="map"></div>
+                    <div class="map-overlay">
+                        <div>
+                            <strong>Kaesang Cendawan</strong><br>
+                            <small>Budidaya jamur lokal Lampung</small>
+                        </div>
+                        <a href="https://maps.app.goo.gl/199dKAKKpQAMM56P8" target="_blank">
+                            <i class="fas fa-external-link-alt"></i> Buka di Google Maps
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo">
+                        <div class="logo-img">
+                            <i class="fas fa-mushroom"></i>
+                        </div>
+                        <div class="logo-text">
+                            <h1>Kaesang Cendawan</h1>
+                        </div>
+                    </div>
+                    <p>Menghadirkan jamur segar berkualitas dari budidaya lokal Lampung dengan proses alami dan ramah
+                        lingkungan.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Tautan Cepat</h3>
+                    <ul>
+                        <li><a href="#home">Beranda</a></li>
+                        <li><a href="#products">Produk</a></li>
+                        <li><a href="#gallery">Galeri</a></li>
+                        <li><a href="#blog">Resep</a></li>
+                        <li><a href="#contact">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-social">
+                    <h3>Ikuti Kami</h3>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="https://web.facebook.com/share/p/17xa6g7SmC/"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://wa.me/6281369079309"><i class="fab fa-whatsapp"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p>&copy; 2023 Kaesang Cendawan. Semua hak dilindungi. | Pakuan Sakti, Pakuan Ratu, Way Kanan, Lampung
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal untuk Resep -->
+    <div id="resepModal" class="resep-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Resep Detail</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-img" id="modalImage"></div>
+                <div class="resep-info">
+                    <div class="bahan-list">
+                        <h4>Bahan-bahan:</h4>
+                        <ul id="bahanList"></ul>
+                    </div>
+                    <div class="cara-list">
+                        <h4>Cara Membuat:</h4>
+                        <ol id="caraList"></ol>
+                    </div>
+                </div>
+                <div class="tips" id="tipsResep">
+                    <h4>Tips:</h4>
+                    <p id="tipsText"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- External JavaScript Libraries -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        // ========== DATA RESEP ==========
+        const resepData = {
+            1: {
+                title: "Tumis Jamur Tiram Saus Tiram",
+                image: "https://cdn.yummy.co.id/content-images/images/20230906/CXASt7Mti2I03X6aBhC4sYSRE86OqeUr-31363933393934333933d41d8cd98f00b204e9800998ecf8427e.jpg?x-oss-process=image/resize,w_388,h_388,m_fixed,x-oss-process=image/format,webp",
+                bahan: [
+                    "500 gram jamur tiram segar, suwir-suwir",
+                    "1 buah bawang bombay, iris tipis",
+                    "3 siung bawang putih, cincang halus",
+                    "2 buah cabai merah, iris serong",
+                    "3 sdm saus tiram",
+                    "2 sdm kecap manis",
+                    "1 sdt kecap asin",
+                    "1 sdt minyak wijen",
+                    "1 batang daun bawang, iris tipis",
+                    "Minyak untuk menumis",
+                    "Garam dan merica secukupnya"
+                ],
+                cara: [
+                    "Bersihkan jamur tiram, suwir-suwir sesuai ukuran yang diinginkan",
+                    "Panaskan minyak, tumis bawang putih dan bawang bombay hingga harum",
+                    "Masukkan cabai merah, tumis sebentar",
+                    "Tambahkan jamur tiram, aduk rata dan masak hingga jamur layu",
+                    "Masukkan saus tiram, kecap manis, kecap asin, dan minyak wijen",
+                    "Aduk rata dan masak selama 3-5 menit hingga bumbu meresap",
+                    "Tambahkan garam dan merica secukupnya, koreksi rasa",
+                    "Terakhir masukkan daun bawang, aduk sebentar",
+                    "Angkat dan sajikan hangat dengan nasi putih"
+                ],
+                tips: "Untuk tekstur yang lebih crispy, jamur bisa ditumis dengan api besar dalam waktu singkat. Tambahkan sedikit air jika ingin kuah lebih banyak."
+            },
+            2: {
+                title: "Sup Jamur Jerami Ayam",
+                image: "https://img-global.cpcdn.com/recipes/fa4619c0e60e2851/1200x630cq70/photo.jpg",
+                bahan: [
+                    "300 gram jamur jerami segar, potong sesuai selera",
+                    "200 gram dada ayam fillet, potong dadu",
+                    "1 buah wortel, potong dadu",
+                    "1 buah jagung manis, pipil",
+                    "3 siung bawang putih, geprek",
+                    "1 ruas jahe, geprek",
+                    "2 batang daun bawang, iris tipis",
+                    "1 batang seledri, iris halus",
+                    "1 liter air kaldu ayam",
+                    "1 sdt garam",
+                    "½ sdt merica bubuk",
+                    "1 sdt minyak wijen",
+                    "Bawang goreng untuk taburan"
+                ],
+                cara: [
+                    "Didihkan air kaldu ayam dalam panci",
+                    "Masukkan bawang putih dan jahe, masak hingga harum",
+                    "Tambahkan potongan ayam, masak hingga ayam matang",
+                    "Masukkan wortel dan jagung, masak hingga setengah matang",
+                    "Tambahkan jamur jerami, masak hingga jamur matang",
+                    "Bumbui dengan garam, merica, dan minyak wijen",
+                    "Koreksi rasa, tambahkan daun bawang dan seledri",
+                    "Masak sebentar hingga daun bawang layu",
+                    "Angkat dan sajikan hangat dengan taburan bawang goreng"
+                ],
+                tips: "Sup akan lebih nikmat jika disajikan dalam keadaan panas. Bisa ditambahkan sedikit saus tiram untuk rasa yang lebih gurih."
+            },
+            3: {
+                title: "Jamur Crispy Tepung",
+                image: "https://img-global.cpcdn.com/recipes/b38fe9a8583e1547/680x482cq70/jamur-tiram-crispy-foto-resep-utama.jpg",
+                bahan: [
+                    "400 gram jamur tiram atau jerami, suwir atau potong sesuai selera",
+                    "150 gram tepung terigu",
+                    "50 gram tepung beras",
+                    "1 butir telur",
+                    "200 ml air es",
+                    "2 siung bawang putih, haluskan",
+                    "1 sdt garam",
+                    "1 sdt merica bubuk",
+                    "1 sdt kaldu jamur",
+                    "½ sdt baking powder",
+                    "Minyak untuk menggoreng",
+                    "Saus sambal atau mayones untuk cocolan"
+                ],
+                cara: [
+                    "Cuci bersih jamur, tiriskan hingga kering",
+                    "Campur tepung terigu, tepung beras, garam, merica, kaldu jamur, dan baking powder",
+                    "Tambahkan telur dan air es sedikit demi sedikit, aduk hingga menjadi adonan yang kental",
+                    "Masukkan bawang putih halus, aduk rata",
+                    "Panaskan minyak dalam wajan dengan api sedang",
+                    "Celupkan jamur ke dalam adonan tepung, pastikan seluruh permukaan tertutup",
+                    "Goreng jamur hingga berwarna kuning keemasan, angkat dan tiriskan",
+                    "Sajikan hangat dengan saus sambal atau mayones"
+                ],
+                tips: "Gunakan air es untuk membuat adonan lebih renyah. Pastikan minyak benar-benar panas sebelum menggoreng agar jamur tidak menyerap banyak minyak."
+            },
+            4: {
+                title: "Capcay Jamur Tiram & Jerami",
+                image: "https://media.zcreators.id/crop/0x0:0x0/750x500/photo/indizone/2019/12/03/Q8saQy/t_5de617e1ab7f6.jpg",
+                bahan: [
+                    "200 gram jamur tiram, suwir",
+                    "200 gram jamur jerami, potong sesuai selera",
+                    "100 gram udang kupas",
+                    "100 gram ayam fillet, iris tipis",
+                    "1 buah wortel, iris tipis",
+                    "100 gram sawi hijau, potong",
+                    "100 gram brokoli, potong kuntum",
+                    "100 gram kembang kol, potong kecil",
+                    "1 buah bawang bombay, iris tipis",
+                    "3 siung bawang putih, cincang",
+                    "3 sdm saus tiram",
+                    "2 sdm kecap ikan",
+                    "1 sdt minyak wijen",
+                    "1 sdm maizena, larutkan dengan sedikit air",
+                    "200 ml air kaldu",
+                    "Minyak untuk menumis"
+                ],
+                cara: [
+                    "Panaskan minyak, tumis bawang putih dan bawang bombay hingga harum",
+                    "Masukkan ayam dan udang, tumis hingga berubah warna",
+                    "Tambahkan wortel, brokoli, dan kembang kol, tumis sebentar",
+                    "Masukkan jamur tiram dan jamur jerami, aduk rata",
+                    "Tuang air kaldu, masak hingga sayuran setengah matang",
+                    "Tambahkan sawi hijau, saus tiram, kecap ikan, dan minyak wijen",
+                    "Tuang larutan maizena, aduk hingga kuah mengental",
+                    "Koreksi rasa, angkat dan sajikan hangat"
+                ],
+                tips: "Masak dengan api besar agar sayuran tetap renyah dan warnanya cerah. Bisa ditambahkan bakso atau sosis sesuai selera."
+            }
+        };
+
+        // ========== DOM ELEMENTS ==========
+        const resepModal = document.getElementById('resepModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalImage = document.getElementById('modalImage');
+        const bahanList = document.getElementById('bahanList');
+        const caraList = document.getElementById('caraList');
+        const tipsText = document.getElementById('tipsText');
+        const closeModal = document.getElementById('closeModal');
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        let map; // Global map variable
+
+        // ========== LOGO ERROR HANDLING ==========
+        const logoImg = document.getElementById('logo-img');
+        if (logoImg) {
+            logoImg.onerror = function () {
+                this.style.display = 'none';
+                this.parentNode.innerHTML = `
+                    <div style="
+                        color:#2e7d32;
+                        font-size:28px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        height:60px;
+                    ">
+                        <i class="fas fa-mushroom"></i>
+                    </div>
+                `;
+            };
+        }
+
+        // ========== RESEP MODAL FUNCTIONS ==========
+        function openResepModal(resepId) {
+            const resep = resepData[resepId];
+
+            if (resep) {
+                modalTitle.textContent = resep.title;
+                modalImage.style.backgroundImage = `url('${resep.image}')`;
+
+                // Isi bahan-bahan
+                bahanList.innerHTML = '';
+                resep.bahan.forEach(bahan => {
+                    const li = document.createElement('li');
+                    li.textContent = bahan;
+                    bahanList.appendChild(li);
+                });
+
+                // Isi cara membuat
+                caraList.innerHTML = '';
+                resep.cara.forEach(cara => {
+                    const li = document.createElement('li');
+                    li.textContent = cara;
+                    caraList.appendChild(li);
+                });
+
+                // Isi tips
+                tipsText.textContent = resep.tips;
+
+                // Tampilkan modal
+                resepModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeResepModal() {
+            resepModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // ========== EVENT LISTENERS ==========
+        // Resep Modal
+        document.querySelectorAll('.read-more').forEach(button => {
+            button.addEventListener('click', function (e) {
+                e.preventDefault();
+                const resepId = this.getAttribute('data-resep');
+                openResepModal(resepId);
+            });
+        });
+
+        closeModal.addEventListener('click', closeResepModal);
+
+        resepModal.addEventListener('click', function (e) {
+            if (e.target === resepModal) {
+                closeResepModal();
+            }
+        });
+
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && resepModal.style.display === 'block') {
+                closeResepModal();
+            }
+        });
+
+        // Mobile Menu
+        mobileMenuBtn.addEventListener('click', function () {
+            navLinks.classList.toggle('active');
+        });
+
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Close mobile menu if open
+                navLinks.classList.remove('active');
+
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Header Scroll Effect
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.boxShadow = '0 5px 20px rgba(0,0,0,0.1)';
+            } else {
+                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
+            }
+        });
+
+        // ========== VIDEO GALLERY HANDLER ==========
+        document.querySelectorAll('.gallery-img.video').forEach(item => {
+            item.addEventListener('click', function () {
+                const videoUrl = this.dataset.video;
+
+                const modal = document.createElement('div');
+                modal.style.position = 'fixed';
+                modal.style.top = '0';
+                modal.style.left = '0';
+                modal.style.width = '100%';
+                modal.style.height = '100%';
+                modal.style.background = 'rgba(0,0,0,0.9)';
+                modal.style.display = 'flex';
+                modal.style.alignItems = 'center';
+                modal.style.justifyContent = 'center';
+                modal.style.zIndex = '3000';
+
+                modal.innerHTML = `
+                    <div style="width: 90%; max-width: 900px; position: relative;">
+                        <iframe 
+                            width="100%" 
+                            height="500" 
+                            src="${videoUrl}?autoplay=1" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                        <button 
+                            style="
+                                position: absolute;
+                                top: -40px;
+                                right: 0;
+                                background: none;
+                                border: none;
+                                color: white;
+                                font-size: 1.5rem;
+                                cursor: pointer;
+                            "
+                            onclick="this.parentElement.parentElement.remove()"
+                        >
+                            ×
+                        </button>
+                    </div>
+                `;
+
+                modal.addEventListener('click', function (e) {
+                    if (e.target === this) {
+                        this.remove();
+                    }
+                });
+
+                document.body.appendChild(modal);
+            });
+        });
+
+        // ========== MAP INITIALIZATION ==========
+        document.addEventListener('DOMContentLoaded', function () {
+            const lampungCoords = [-4.4898, 104.4945];
+
+            // Deteksi device untuk menentukan zoom level
+            const isMobile = window.innerWidth <= 768;
+            const zoomLevel = isMobile ? 14 : 15;
+            const circleRadius = isMobile ? 200 : 300; // Radius lebih kecil di mobile
+
+            map = L.map('map', {
+                zoomControl: true,
+                preferCanvas: true
+            }).setView(lampungCoords, zoomLevel);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            // Custom Mushroom Icon
+            const mushroomIcon = L.divIcon({
+                html: `
+                    <div style="
+                        background-color:#2e7d32;
+                        color:white;
+                        border-radius:50%;
+                        width:42px;
+                        height:42px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        border:3px solid #fff;
+                        box-shadow:0 4px 10px rgba(0,0,0,.35);
+                        font-size:18px;">
+                        <i class="fas fa-mushroom"></i>
+                    </div>
+                `,
+                className: '',
+                iconSize: [42, 42],
+                iconAnchor: [21, 42]
+            });
+
+            // Marker
+            L.marker(lampungCoords, { icon: mushroomIcon })
+                .addTo(map)
+                .bindPopup(`
+                    <b>Kaesang Cendawan</b><br>
+                    Budidaya jamur lokal Lampung<br>
+                    <a href="https://maps.app.goo.gl/199dKAKKpQAMM56P8" target="_blank">
+                        📍 Buka di Google Maps
+                    </a>
+                `)
+                .openPopup();
+
+            // Circle area - radius disesuaikan dengan device
+            L.circle(lampungCoords, {
+                color: "#2e7d32",
+                fillColor: "#81c784",
+                fillOpacity: 0.25,
+                radius: circleRadius
+            }).addTo(map);
+
+            // Fix mobile render
+            setTimeout(() => map.invalidateSize(true), 800);
+        });
+
+        // ========== MAP RESPONSIVE HANDLING ==========
+        window.addEventListener('resize', () => {
+            if (map) {
+                // Update zoom level dan radius berdasarkan ukuran layar
+                const isMobile = window.innerWidth <= 768;
+                const newZoom = isMobile ? 14 : 15;
+                const newCenter = map.getCenter();
+
+                map.setView(newCenter, newZoom);
+                map.invalidateSize(true);
+            }
+        });
+
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                if (map) map.invalidateSize(true);
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>

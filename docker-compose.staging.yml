@@ -1,0 +1,15 @@
+# Override untuk lingkungan staging
+services:
+  mysql:
+    ports: []
+
+  backend:
+    build:
+      target: production
+    env_file:
+      - ./docker/env/staging.env
+
+  frontend:
+    build:
+      args:
+        VITE_API_URL: ${VITE_API_URL:-https://staging.example.com}
