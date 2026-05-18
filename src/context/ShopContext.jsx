@@ -74,9 +74,7 @@ export const ShopProvider = ({ children }) => {
         const data = await res.json();
         if (!cancelled) {
           const list = toArray(data, ['products', 'data', 'items']);
-          if (list.length > 0) {
-            setProducts(list.map(normalizeProduct));
-          }
+          setProducts(list.map(normalizeProduct));
         }
       } catch (err) {
         if (!cancelled) {
