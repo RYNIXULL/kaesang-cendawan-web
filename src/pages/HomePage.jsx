@@ -371,10 +371,10 @@ const LocationSection = () => {
             </div>
             <div className="flex gap-4">
               <a 
-                href="https://maps.google.com" 
+                href="https://maps.app.goo.gl/T9E2nQ4d61rR57j99" 
                 target="_blank" 
                 rel="noreferrer" 
-                className="inline-flex items-center gap-2 bg-[#4a7c59] text-white px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-[#3a6347] hover:shadow-lg hover:shadow-emerald-500/10 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 bg-[#4a7c59] text-white px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-[#3a6347] hover:shadow-lg hover:shadow-emerald-500/10 transition-all active:scale-95 shadow-md shadow-emerald-800/10"
               >
                 <MapPin className="h-4.5 w-4.5" /> 
                 <span>Petunjuk Google Maps</span>
@@ -383,17 +383,17 @@ const LocationSection = () => {
                 href="https://wa.me/6281234567890" 
                 target="_blank" 
                 rel="noreferrer" 
-                className="inline-flex items-center gap-2 bg-[#25D366] text-white px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-[#128C7E] hover:shadow-lg hover:shadow-green-500/10 transition-all active:scale-95"
+                className="inline-flex items-center gap-2 bg-[#25D366] text-white px-6 py-3.5 rounded-2xl text-xs font-black uppercase tracking-wider hover:bg-[#128C7E] hover:shadow-lg hover:shadow-green-500/10 transition-all active:scale-95 shadow-md shadow-green-600/10"
               >
                 <MessageCircle className="h-4.5 w-4.5" /> 
                 <span>Hubungi WhatsApp</span>
               </a>
             </div>
           </div>
-          <div className="h-80 rounded-[32px] overflow-hidden border-4 border-white shadow-2xl shadow-slate-200/50 w-full relative group">
+          <div className="h-80 rounded-[32px] overflow-hidden border-4 border-white shadow-2xl shadow-slate-200/50 w-full relative group z-10">
             <iframe 
               title="Google Maps" 
-              src="https://maps.google.com/maps?q=Pakuan%20Sakti,%20Pakuan%20Ratu,%20Way%20Kanan&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+              src="https://maps.google.com/maps?q=Kaesang%20Cendawan,%20Pakuan%20Sakti,%20Pakuan%20Ratu,%20Way%20Kanan&t=&z=14&ie=UTF8&iwloc=&output=embed" 
               width="100%" 
               height="100%" 
               style={{ border: 0 }} 
