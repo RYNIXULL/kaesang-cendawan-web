@@ -134,34 +134,44 @@ const resepData = [
   }
 ];
 
+import { Sparkles } from 'lucide-react';
+
 const Recipe = () => {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
 
   return (
-    <section className="bg-white py-20" id="resep">
+    <section className="bg-transparent py-20" id="resep">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-slate-800 mb-4">Resep Olahan Jamur</h2>
-          <p className="text-slate-500 max-w-2xl mx-auto">
-            Inspirasi memasak dengan jamur tiram dan jamur jerami dari Kaesang Cendawan
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[#4a7c59] text-xs font-black uppercase tracking-widest mb-3">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>Inspirasi Masakan</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">Resep Olahan Jamur</h2>
+          <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px] mt-2">
+            Ide hidangan lezat dan sehat dari Kaesang Cendawan
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {resepData.map((resep) => (
-            <div key={resep.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 flex flex-col hover:shadow-lg hover:-translate-y-2 transition-all duration-300">
+            <div 
+              key={resep.id} 
+              className="bg-white/70 backdrop-blur-xl rounded-[32px] overflow-hidden shadow-xl shadow-slate-100/50 border border-white/80 flex flex-col hover:shadow-2xl hover:shadow-emerald-500/5 hover:-translate-y-1.5 transition-all duration-300 group"
+            >
               <div 
-                className="h-48 bg-slate-200 bg-cover bg-center"
+                className="h-52 bg-slate-200 bg-cover bg-center group-hover:scale-[1.02] transition-transform duration-500"
                 style={{ backgroundImage: `url('${resep.image}')` }}
               ></div>
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-bold text-lg text-slate-900 mb-2">{resep.title}</h3>
-                <p className="text-slate-500 text-sm mb-4 flex-grow">{resep.desc}</p>
+              <div className="p-6 flex flex-col flex-grow bg-white/40">
+                <h3 className="font-black text-base text-slate-800 mb-2 leading-snug group-hover:text-[#4a7c59] transition-colors">{resep.title}</h3>
+                <p className="text-slate-500 text-xs font-semibold mb-6 flex-grow leading-relaxed line-clamp-3">{resep.desc}</p>
                 <button 
                   onClick={() => setSelectedRecipe(resep)}
-                  className="text-[#4a7c59] font-bold flex items-center gap-2 hover:text-[#d99a45] transition-colors self-start mt-auto"
+                  className="text-xs font-black uppercase tracking-wider text-[#4a7c59] flex items-center gap-1.5 hover:text-[#d99a45] transition-colors self-start mt-auto active:scale-95 duration-200"
                 >
-                  Baca Resep <ArrowRight className="w-4 h-4" />
+                  <span>Baca Resep Lengkap</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
             </div>
@@ -171,43 +181,52 @@ const Recipe = () => {
 
       {/* Modal Resep */}
       {selectedRecipe && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={() => setSelectedRecipe(null)}>
-          <div className="bg-white w-full max-w-3xl max-h-[90vh] rounded-2xl shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
-            <div className="bg-[#4a7c59] text-white p-4 flex justify-between items-center">
-              <h3 className="font-bold text-lg">{selectedRecipe.title}</h3>
-              <button onClick={() => setSelectedRecipe(null)} className="hover:text-gray-200 transition-colors p-1">
-                <X className="w-6 h-6" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedRecipe(null)}>
+          <div className="bg-white/95 backdrop-blur-2xl w-full max-w-3xl max-h-[90vh] rounded-[32px] shadow-2xl border border-white/80 overflow-hidden flex flex-col animate-in zoom-in-95" onClick={e => e.stopPropagation()}>
+            <div className="bg-gradient-to-r from-[#4a7c59] to-[#3a6347] text-white p-6 flex justify-between items-center border-b border-[#4a7c59]/10">
+              <h3 className="font-black text-lg tracking-tight">{selectedRecipe.title}</h3>
+              <button 
+                onClick={() => setSelectedRecipe(null)} 
+                className="bg-white/10 hover:bg-white/20 text-white rounded-full p-2 w-9 h-9 flex items-center justify-center transition-all font-bold"
+              >
+                <X className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="overflow-y-auto p-6 flex-grow">
+            <div className="overflow-y-auto p-6 md:p-8 flex-grow">
               <div 
-                className="w-full h-64 md:h-80 bg-slate-200 rounded-xl mb-6 bg-cover bg-center shadow-inner"
+                className="w-full h-64 md:h-80 bg-slate-200 rounded-[24px] mb-8 bg-cover bg-center shadow-lg border-4 border-white"
                 style={{ backgroundImage: `url('${selectedRecipe.image}')` }}
               ></div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
-                <div className="bg-[#f0f7f4] p-5 rounded-xl border border-[#d1e6d9]">
-                  <h4 className="font-bold text-[#2c4a35] text-lg mb-4">Bahan-bahan:</h4>
-                  <ul className="list-disc pl-5 space-y-2 text-slate-700 text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div className="bg-gradient-to-br from-white to-emerald-50/30 p-6 rounded-[24px] border border-slate-100 shadow-sm">
+                  <h4 className="font-black text-[#2c4a35] text-sm uppercase tracking-wider mb-4 flex items-center gap-1.5 border-b border-emerald-100/50 pb-2">🥗 Bahan-bahan:</h4>
+                  <ul className="space-y-2.5 text-slate-600 text-xs font-semibold">
                     {selectedRecipe.bahan.map((item, idx) => (
-                      <li key={idx}>{item}</li>
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-[#4a7c59] mt-0.5">•</span>
+                        <span>{item}</span>
+                      </li>
                     ))}
                   </ul>
                 </div>
-                <div className="bg-[#fcfaf8] p-5 rounded-xl border border-slate-200 shadow-sm">
-                  <h4 className="font-bold text-[#2c4a35] text-lg mb-4">Cara Membuat:</h4>
-                  <ol className="list-decimal pl-5 space-y-3 text-slate-700 text-sm">
+                <div className="bg-gradient-to-br from-white to-amber-50/20 p-6 rounded-[24px] border border-slate-100 shadow-sm">
+                  <h4 className="font-black text-[#2c4a35] text-sm uppercase tracking-wider mb-4 flex items-center gap-1.5 border-b border-amber-100/50 pb-2">🍳 Cara Membuat:</h4>
+                  <ol className="space-y-3.5 text-slate-600 text-xs font-semibold list-decimal pl-4.5">
                     {selectedRecipe.cara.map((langkah, idx) => (
-                      <li key={idx} className="pl-1">{langkah}</li>
+                      <li key={idx} className="pl-1 leading-relaxed">{langkah}</li>
                     ))}
                   </ol>
                 </div>
               </div>
               
-              <div className="bg-amber-50 p-5 rounded-xl border border-amber-100">
-                <h4 className="font-bold text-amber-800 mb-2">💡 Tips:</h4>
-                <p className="text-amber-700 text-sm">{selectedRecipe.tips}</p>
+              <div className="bg-amber-50/60 p-5 rounded-[24px] border border-amber-100 flex items-start gap-3">
+                <span className="text-xl">💡</span>
+                <div>
+                  <h4 className="font-black text-amber-800 text-xs uppercase tracking-wider mb-1">Tips Tambahan:</h4>
+                  <p className="text-amber-700/90 text-xs font-semibold leading-relaxed">{selectedRecipe.tips}</p>
+                </div>
               </div>
             </div>
           </div>

@@ -480,11 +480,11 @@ export default function HomePage({ navigate, isAdmin }) {
   ];
 
   return (
-    <div className="font-sans text-slate-800 bg-gradient-to-tr from-[#f8faf8] via-[#f0f6f2] to-[#f9f7f2] min-h-screen flex flex-col w-full overflow-x-hidden relative">
+    <div className="font-sans text-slate-800 bg-gradient-to-tr from-[#edf8f1] via-[#dcf2e4] to-[#fbf8ee] min-h-screen flex flex-col w-full overflow-x-hidden relative">
       {/* Dynamic Ambient Background Blobs */}
-      <div className="absolute top-[20%] left-[-15%] w-[60%] h-[30%] bg-emerald-100/40 rounded-full blur-[140px] pointer-events-none z-0" />
-      <div className="absolute top-[45%] right-[-15%] w-[55%] h-[25%] bg-amber-100/30 rounded-full blur-[120px] pointer-events-none z-0" />
-      <div className="absolute top-[70%] left-[-10%] w-[50%] h-[25%] bg-emerald-50/50 rounded-full blur-[130px] pointer-events-none z-0" />
+      <div className="absolute top-[12%] left-[-15%] w-[60%] h-[35%] bg-emerald-300/40 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="absolute top-[38%] right-[-15%] w-[55%] h-[30%] bg-amber-300/35 rounded-full blur-[125px] pointer-events-none z-0" />
+      <div className="absolute top-[65%] left-[-10%] w-[50%] h-[30%] bg-teal-300/45 rounded-full blur-[130px] pointer-events-none z-0" />
 
       <Navbar
         onCartClick={() => navigate('/cart')}
