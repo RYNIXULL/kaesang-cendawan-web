@@ -40,7 +40,7 @@ const Gallery = ({ items }) => {
   const displayItems = Array.isArray(items) && items.length > 0 ? items : galleryData;
 
   return (
-    <section className="bg-gradient-to-b from-slate-50 to-[#fcfaf8] py-20 border-t border-slate-200/50" id="gallery">
+    <section className="bg-transparent py-20 border-t border-slate-200/40" id="gallery">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 border border-amber-100 text-[#d99a45] text-xs font-black uppercase tracking-widest mb-3">
