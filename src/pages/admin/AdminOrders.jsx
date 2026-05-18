@@ -219,41 +219,41 @@ export default function AdminOrders({ navigate, onLogout, adminToken }) {
   const completedCount = safeOrders.filter((o) => o.status === 'COMPLETED').length;
 
   return (
-    <div className="min-h-screen bg-[#f8faf9]">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-[#f4f7f5] to-slate-100">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
+      <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-slate-200/80 sticky top-0 z-40">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
             <button 
               onClick={() => navigate('/admin/dashboard')}
-              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0"
+              className="p-2 text-slate-400 hover:text-[#4a7c59] hover:bg-[#f0f7f4] rounded-xl transition-all flex-shrink-0 active:scale-95"
               title="Kembali"
             >
-              <ChevronLeft className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
+              <ChevronLeft className="h-5 w-5" />
             </button>
-            <div className="bg-gradient-to-br from-[#d99a45] to-[#c4883b] p-2 rounded-lg sm:p-2.5 sm:rounded-xl shadow-sm flex-shrink-0">
+            <div className="bg-gradient-to-br from-[#d99a45] to-[#c4883b] p-2 rounded-lg sm:p-2.5 sm:rounded-xl shadow-md shadow-[#d99a45]/20 flex-shrink-0 transform hover:scale-105 transition-transform">
               <ClipboardList className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-white" />
             </div>
             <div className="min-w-0">
               <span className="text-sm sm:text-base md:text-xl font-black text-slate-900 tracking-tight block leading-tight truncate">
-                Pesanan
+                Pesanan Masuk
               </span>
-              <span className="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">
-                {safeOrders.length} total pesanan
+              <span className="text-[10px] sm:text-xs text-slate-400 font-semibold hidden sm:block">
+                {safeOrders.length} total pesanan tercatat
               </span>
             </div>
           </div>
-          <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 flex-shrink-0">
             <button 
               onClick={handleRefresh}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-600 hover:text-[#4a7c59] hover:bg-[#f0f7f4] rounded-xl transition-colors text-xs sm:text-sm font-bold active:scale-95"
               title="Refresh Data"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
             <button
               onClick={() => navigate('/admin/settings')}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-4 sm:py-2.5 bg-[#4a7c59] text-white hover:bg-[#3a6347] rounded-xl transition-all text-xs sm:text-sm font-bold shadow-sm hover:shadow-md"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-4 sm:py-2.5 bg-[#4a7c59] text-white hover:bg-[#3a6347] hover:shadow-lg hover:shadow-[#4a7c59]/20 rounded-xl transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95"
               title="CMS Beranda"
             >
               <Settings className="h-4 w-4" />
@@ -261,7 +261,7 @@ export default function AdminOrders({ navigate, onLogout, adminToken }) {
             </button>
             <button 
               onClick={() => navigate('/')}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-600 hover:text-[#4a7c59] hover:bg-[#f0f7f4] rounded-xl transition-colors text-xs sm:text-sm font-bold active:scale-95"
               title="Toko"
             >
               <Home className="h-4 w-4" />
@@ -269,7 +269,7 @@ export default function AdminOrders({ navigate, onLogout, adminToken }) {
             </button>
             <button 
               onClick={onLogout}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors text-xs sm:text-sm font-bold active:scale-95"
               title="Logout"
             >
               <LogOut className="h-4 w-4" />
@@ -280,64 +280,64 @@ export default function AdminOrders({ navigate, onLogout, adminToken }) {
 
       <div className="container mx-auto px-4 py-8">
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-emerald-50 to-teal-50/30 p-5 rounded-3xl shadow-sm border border-emerald-100 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:-translate-y-1 transition-all duration-300 group">
             <div className="flex items-center space-x-3">
-              <div className="bg-emerald-50 p-2.5 rounded-xl">
-                <DollarSign className="h-5 w-5 text-emerald-600" />
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-2.5 rounded-2xl shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform">
+                <DollarSign className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Pendapatan</p>
-                <p className="text-lg font-extrabold text-slate-900 leading-tight mt-0.5">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pendapatan</p>
+                <p className="text-base sm:text-lg font-black text-slate-800 leading-tight mt-0.5">
                   {stats ? formatRupiah(stats.revenue) : '...'}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-amber-100 border-l-4 border-l-amber-400">
+          <div className="bg-gradient-to-br from-amber-50 to-orange-50/30 p-5 rounded-3xl shadow-sm border border-amber-100 hover:border-amber-300 hover:shadow-xl hover:shadow-amber-500/5 hover:-translate-y-1 transition-all duration-300 group">
             <div className="flex items-center space-x-3">
-              <div className="bg-amber-50 p-2.5 rounded-xl">
-                <Clock className="h-5 w-5 text-amber-600" />
+              <div className="bg-gradient-to-br from-amber-500 to-orange-600 p-2.5 rounded-2xl shadow-md shadow-amber-500/10 group-hover:scale-110 transition-transform">
+                <Clock className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Menunggu</p>
-                <p className="text-2xl font-extrabold text-amber-700 leading-tight mt-0.5">{awaitingCount}</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Menunggu</p>
+                <p className="text-xl sm:text-2xl font-black text-amber-700 leading-tight mt-0.5">{awaitingCount}</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-blue-100 border-l-4 border-l-blue-400">
+          <div className="bg-gradient-to-br from-blue-50 to-indigo-50/30 p-5 rounded-3xl shadow-sm border border-blue-100 hover:border-blue-300 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300 group">
             <div className="flex items-center space-x-3">
-              <div className="bg-blue-50 p-2.5 rounded-xl">
-                <Truck className="h-5 w-5 text-blue-600" />
+              <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-2.5 rounded-2xl shadow-md shadow-blue-500/10 group-hover:scale-110 transition-transform">
+                <Truck className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Dikirim</p>
-                <p className="text-2xl font-extrabold text-blue-700 leading-tight mt-0.5">{shippingCount}</p>
-                <p className="text-[10px] text-slate-400">{processingCount} diproses</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Dikirim</p>
+                <p className="text-xl sm:text-2xl font-black text-blue-700 leading-tight mt-0.5">{shippingCount}</p>
+                <p className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">{processingCount} diproses</p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-5 rounded-2xl shadow-sm border border-emerald-100 border-l-4 border-l-emerald-400">
+          <div className="bg-gradient-to-br from-purple-50 to-fuchsia-50/30 p-5 rounded-3xl shadow-sm border border-purple-100 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-500/5 hover:-translate-y-1 transition-all duration-300 group">
             <div className="flex items-center space-x-3">
-              <div className="bg-emerald-50 p-2.5 rounded-xl">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+              <div className="bg-gradient-to-br from-purple-500 to-fuchsia-600 p-2.5 rounded-2xl shadow-md shadow-purple-500/10 group-hover:scale-110 transition-transform">
+                <CheckCircle2 className="h-5 w-5 text-white" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Selesai</p>
-                <p className="text-2xl font-extrabold text-emerald-700 leading-tight mt-0.5">{completedCount}</p>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Selesai</p>
+                <p className="text-xl sm:text-2xl font-black text-purple-700 leading-tight mt-0.5">{completedCount}</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Filter Tabs + Search */}
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 mb-6">
-          <div className="p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="bg-white rounded-3xl shadow-xl shadow-slate-100/60 border border-slate-100 mb-6 overflow-hidden">
+          <div className="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             {/* Status Tabs */}
-            <div className="flex items-center space-x-1 bg-[#f8faf9] p-1 rounded-xl">
+            <div className="flex items-center space-x-1.5 bg-slate-50 p-1.5 rounded-2xl border border-slate-100">
               {FILTER_TABS.map((tab) => {
                 const count = safeOrders.filter(tab.match).length;
                 return (
@@ -345,9 +345,9 @@ export default function AdminOrders({ navigate, onLogout, adminToken }) {
                     key={tab.key}
                     type="button"
                     onClick={() => setFilter(tab.key)}
-                    className={`px-4 py-2 rounded-lg text-sm font-bold transition-all ${
+                    className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all active:scale-[0.98] ${
                       filter === tab.key
-                        ? 'bg-white text-slate-900 shadow-sm'
+                        ? 'bg-white text-slate-800 shadow-sm border border-slate-200/50'
                         : 'text-slate-500 hover:text-slate-700'
                     }`}
                   >

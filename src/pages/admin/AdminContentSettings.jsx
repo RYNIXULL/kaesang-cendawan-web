@@ -371,13 +371,13 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
 
   // ── RENDER ────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#f8faf9]">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-[#f4f7f5] to-slate-100">
 
       {/* ── Header ── */}
-      <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
+      <header className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-slate-200/80 sticky top-0 z-40">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
-            <div className="bg-gradient-to-br from-[#4a7c59] to-[#3a6347] p-2 rounded-lg sm:p-2.5 sm:rounded-xl shadow-sm">
+            <div className="bg-gradient-to-br from-[#4a7c59] to-[#3a6347] p-2 rounded-lg sm:p-2.5 sm:rounded-xl shadow-md shadow-[#4a7c59]/20 transform hover:scale-105 transition-transform">
               <Store className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-white" />
             </div>
             <div className="min-w-0">
@@ -385,7 +385,7 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
                 CMS Beranda
               </span>
               {adminUser && (
-                <span className="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block truncate max-w-[120px] sm:max-w-none">
+                <span className="text-[10px] sm:text-xs text-slate-400 font-semibold hidden sm:block truncate max-w-[120px] sm:max-w-none">
                   Halo, {adminUser.username} 👋
                 </span>
               )}
@@ -395,7 +395,7 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
           <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
             <button
               onClick={() => navigate('/admin/dashboard')}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-600 hover:text-[#4a7c59] hover:bg-[#f0f7f4] rounded-xl transition-colors text-xs sm:text-sm font-bold active:scale-95"
               title="Dashboard"
             >
               <ArrowLeft className="h-4 w-4" />
@@ -403,7 +403,7 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
             </button>
             <button
               onClick={() => navigate('/admin/orders')}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-4 sm:py-2.5 bg-[#d99a45] text-white hover:bg-[#c4883b] rounded-xl transition-all text-xs sm:text-sm font-bold shadow-sm"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-4 sm:py-2.5 bg-[#d99a45] text-white hover:bg-[#c4883b] hover:shadow-lg hover:shadow-[#d99a45]/20 rounded-xl transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95"
               title="Pesanan"
             >
               <ClipboardList className="h-4 w-4" />
@@ -411,7 +411,7 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
             </button>
             <button
               onClick={() => navigate('/')}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-600 hover:text-[#4a7c59] hover:bg-[#f0f7f4] rounded-xl transition-colors text-xs sm:text-sm font-bold active:scale-95"
               title="Toko"
             >
               <Home className="h-4 w-4" />
@@ -419,7 +419,7 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
             </button>
             <button
               onClick={onLogout}
-              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors text-xs sm:text-sm font-bold active:scale-95"
               title="Logout"
             >
               <LogOut className="h-4 w-4" />
@@ -434,20 +434,20 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
         {/* ── Page Title ── */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-extrabold text-slate-900 flex items-center gap-3">
-              <Settings className="h-7 w-7 text-[#4a7c59]" />
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex items-center gap-3 tracking-tight">
+              <Settings className="h-6 w-6 sm:h-7 sm:w-7 text-[#4a7c59] animate-spin-slow" />
               Manajemen Konten Beranda
             </h1>
-            <p className="text-slate-500 text-sm mt-1">
-              Perubahan akan langsung terlihat di halaman utama toko setelah disimpan.
+            <p className="text-xs sm:text-sm text-slate-400 font-semibold mt-1">
+              Perubahan akan langsung terlihat secara dinamis di halaman utama toko setelah disimpan.
             </p>
           </div>
           <button
             onClick={fetchContents}
-            className="flex items-center gap-2 px-3 py-2 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-sm font-bold"
+            className="flex items-center gap-2 p-2.5 text-slate-500 hover:bg-white hover:text-[#4a7c59] rounded-xl hover:shadow-sm border border-transparent hover:border-slate-100 transition-all active:scale-95"
             title="Muat ulang data"
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4.5 w-4.5 ${loading ? 'animate-spin' : ''}`} />
           </button>
         </div>
 
@@ -462,28 +462,28 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
           <div className="space-y-6">
 
             {/* ══ SECTION 1: Hero Image ══════════════════════════ */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-3 bg-gradient-to-r from-[#f0f7f4] to-white">
-                <div className="bg-[#4a7c59]/10 p-2 rounded-lg">
+            <div className="bg-white rounded-3xl shadow-xl shadow-slate-100/60 border border-slate-100 overflow-hidden hover:shadow-2xl hover:shadow-[#4a7c59]/5 transition-all duration-300">
+              <div className="px-6 py-4.5 border-b border-slate-100 flex items-center gap-3 bg-gradient-to-r from-emerald-50/40 to-white">
+                <div className="bg-[#4a7c59]/10 p-2.5 rounded-xl">
                   <Image className="h-5 w-5 text-[#4a7c59]" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-slate-800">Foto Utama (Hero Image)</h2>
-                  <p className="text-xs text-slate-400">Foto di bagian About / Tentang Kami</p>
+                  <h2 className="font-extrabold text-slate-800 tracking-tight">Foto Utama (Hero Image)</h2>
+                  <p className="text-[11px] text-slate-400 font-semibold">Foto di bagian About / Tentang Kami</p>
                 </div>
               </div>
 
-              <div className="p-6 space-y-4">
+              <div className="p-6 space-y-4 bg-white/50">
                 <FormField label="URL / Unggah Foto Hero" icon={Image}>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2.5">
                     <input
                       type="url"
                       value={heroImage}
                       onChange={e => { setHeroImage(e.target.value); setHeroPreviewError(false); }}
                       placeholder="https://images.unsplash.com/photo-..."
-                      className="flex-1 px-4 py-3 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm"
+                      className="flex-1 px-4 py-3.5 bg-[#fcfaf8] border border-slate-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm font-semibold text-slate-800"
                     />
-                    <label className={`flex items-center justify-center px-4 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl cursor-pointer text-slate-600 transition-colors border border-slate-200 ${heroUploading ? 'pointer-events-none opacity-55' : ''}`} title="Unggah dari perangkat">
+                    <label className={`flex items-center justify-center px-4.5 py-3.5 bg-slate-50 hover:bg-[#f0f7f4]/50 rounded-2xl cursor-pointer text-slate-600 transition-colors border border-slate-200 hover:border-[#4a7c59]/30 hover:text-[#4a7c59] ${heroUploading ? 'pointer-events-none opacity-55' : ''}`} title="Unggah dari perangkat">
                       <input
                         type="file"
                         accept="image/*"
@@ -500,27 +500,27 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
                     <button
                       type="button"
                       onClick={() => setShowHeroPreview(v => !v)}
-                      className="px-3 py-3 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors text-slate-500 border border-slate-200"
+                      className="px-4.5 py-3.5 bg-slate-50 hover:bg-[#f0f7f4]/50 rounded-2xl transition-colors text-slate-500 border border-slate-200 hover:border-[#4a7c59]/30 hover:text-[#4a7c59]"
                       title={showHeroPreview ? 'Sembunyikan preview' : 'Tampilkan preview'}
                     >
-                      {showHeroPreview ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {showHeroPreview ? <EyeOff className="h-4.5 w-4.5" /> : <Eye className="h-4.5 w-4.5" />}
                     </button>
                   </div>
                 </FormField>
 
                 {showHeroPreview && heroImage && (
-                  <div className="rounded-xl overflow-hidden border border-slate-200 h-48 bg-slate-100">
+                  <div className="rounded-2xl overflow-hidden border border-slate-200 h-52 bg-slate-50 relative group shadow-inner">
                     {!heroPreviewError ? (
                       <img
                         src={resolveProductImageUrl(heroImage)}
                         alt="Preview Hero"
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         onError={() => setHeroPreviewError(true)}
                       />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2">
-                        <Image className="h-10 w-10" />
-                        <span className="text-sm">URL gambar tidak valid atau tidak dapat dimuat</span>
+                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2 bg-slate-50">
+                        <Image className="h-10 w-10 text-slate-300" />
+                        <span className="text-xs font-bold text-slate-400">URL gambar tidak valid atau tidak dapat dimuat</span>
                       </div>
                     )}
                   </div>
@@ -529,28 +529,28 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
             </div>
 
             {/* ══ SECTION 2: About Text ══════════════════════════ */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-              <div className="px-6 py-4 border-b border-slate-100 flex items-center gap-3 bg-gradient-to-r from-[#f0f7f4] to-white">
-                <div className="bg-[#4a7c59]/10 p-2 rounded-lg">
+            <div className="bg-white rounded-3xl shadow-xl shadow-slate-100/60 border border-slate-100 overflow-hidden hover:shadow-2xl hover:shadow-[#4a7c59]/5 transition-all duration-300">
+              <div className="px-6 py-4.5 border-b border-slate-100 flex items-center gap-3 bg-gradient-to-r from-emerald-50/40 to-white">
+                <div className="bg-[#4a7c59]/10 p-2.5 rounded-xl">
                   <FileText className="h-5 w-5 text-[#4a7c59]" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-slate-800">Teks "Tentang Kami"</h2>
-                  <p className="text-xs text-slate-400">Konten paragraf di seksi About</p>
+                  <h2 className="font-extrabold text-slate-800 tracking-tight">Teks "Tentang Kami"</h2>
+                  <p className="text-[11px] text-slate-400 font-semibold">Konten paragraf di seksi About</p>
                 </div>
               </div>
 
-              <div className="p-6">
+              <div className="p-6 bg-white/50">
                 <FormField label='Paragraf Tentang Kami' icon={FileText}>
                   <textarea
                     rows={6}
                     value={aboutText}
                     onChange={e => setAboutText(e.target.value)}
                     placeholder="Tuliskan cerita dan deskripsi tentang usaha Anda di sini..."
-                    className="w-full px-4 py-3 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none resize-none transition-all text-sm leading-relaxed"
+                    className="w-full px-4 py-3.5 bg-[#fcfaf8] border border-slate-200 rounded-2xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none resize-none transition-all text-sm leading-relaxed font-semibold text-slate-800"
                   />
                 </FormField>
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-[11px] text-slate-400 font-semibold mt-2.5 flex items-center gap-1">
                   💡 Gunakan baris kosong (Enter 2x) untuk memisahkan paragraf. Teks akan ditampilkan sesuai format di atas.
                 </p>
               </div>
@@ -910,18 +910,18 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
             </div>
 
             {/* ══ SAVE BUTTON ══════════════════════════════════ */}
-            <div className="flex justify-end pt-2 pb-8">
+            <div className="flex justify-end pt-4 pb-12">
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex items-center gap-3 px-8 py-3.5 bg-gradient-to-r from-[#4a7c59] to-[#3a6347] text-white rounded-xl font-bold text-base hover:shadow-lg hover:shadow-[#4a7c59]/25 transition-all shadow-md active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
+                className="flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-[#4a7c59] to-[#3a6347] hover:from-[#3a6347] hover:to-[#2d5038] text-white rounded-2xl font-bold text-base hover:shadow-xl hover:shadow-[#4a7c59]/25 transition-all shadow-md active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed border border-white/20"
               >
                 {saving ? (
-                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <Loader2 className="h-5.5 w-5.5 animate-spin" />
                 ) : (
-                  <Save className="h-5 w-5" />
+                  <Save className="h-5.5 w-5.5" />
                 )}
-                {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
+                <span>{saving ? 'Menyimpan Konten...' : 'Simpan Semua Perubahan'}</span>
               </button>
             </div>
 
