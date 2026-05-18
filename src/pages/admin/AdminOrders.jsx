@@ -222,47 +222,55 @@ export default function AdminOrders({ navigate, onLogout, adminToken }) {
     <div className="min-h-screen bg-[#f8faf9]">
       {/* Header */}
       <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-3">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
             <button 
               onClick={() => navigate('/admin/dashboard')}
-              className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors flex-shrink-0"
+              title="Kembali"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <ChevronLeft className="h-4.5 w-4.5 sm:h-5 sm:w-5" />
             </button>
-            <div className="bg-gradient-to-br from-[#d99a45] to-[#c4883b] p-2.5 rounded-xl shadow-md shadow-[#d99a45]/20">
-              <ClipboardList className="h-5 w-5 text-white" />
+            <div className="bg-gradient-to-br from-[#d99a45] to-[#c4883b] p-2 rounded-lg sm:p-2.5 sm:rounded-xl shadow-sm flex-shrink-0">
+              <ClipboardList className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-white" />
             </div>
-            <div>
-              <span className="text-xl font-extrabold text-slate-900 tracking-tight block leading-tight">Manajemen Pesanan</span>
-              <span className="text-xs text-slate-400 font-medium">{safeOrders.length} total pesanan</span>
+            <div className="min-w-0">
+              <span className="text-sm sm:text-base md:text-xl font-black text-slate-900 tracking-tight block leading-tight truncate">
+                Pesanan
+              </span>
+              <span className="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">
+                {safeOrders.length} total pesanan
+              </span>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
             <button 
               onClick={handleRefresh}
-              className="flex items-center space-x-2 px-3 py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
               title="Refresh Data"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             </button>
             <button
               onClick={() => navigate('/admin/settings')}
-              className="flex items-center space-x-2 px-4 py-2.5 bg-[#4a7c59] text-white hover:bg-[#3a6347] rounded-xl transition-all text-sm font-bold shadow-sm hover:shadow-md"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-4 sm:py-2.5 bg-[#4a7c59] text-white hover:bg-[#3a6347] rounded-xl transition-all text-xs sm:text-sm font-bold shadow-sm hover:shadow-md"
+              title="CMS Beranda"
             >
               <Settings className="h-4 w-4" />
               <span className="hidden sm:inline">CMS Beranda</span>
             </button>
             <button 
               onClick={() => navigate('/')}
-              className="flex items-center space-x-2 px-3 py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              title="Toko"
             >
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">Toko</span>
             </button>
             <button 
               onClick={onLogout}
-              className="flex items-center space-x-2 px-3 py-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              title="Logout"
             >
               <LogOut className="h-4 w-4" />
             </button>

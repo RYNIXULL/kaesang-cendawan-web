@@ -375,46 +375,52 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
 
       {/* ── Header ── */}
       <header className="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-3">
-            <div className="bg-gradient-to-br from-[#4a7c59] to-[#3a6347] p-2.5 rounded-xl shadow-md shadow-[#4a7c59]/20">
-              <Store className="h-5 w-5 text-white" />
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="flex items-center space-x-2 sm:space-x-3 min-w-0">
+            <div className="bg-gradient-to-br from-[#4a7c59] to-[#3a6347] p-2 rounded-lg sm:p-2.5 sm:rounded-xl shadow-sm">
+              <Store className="h-4.5 w-4.5 sm:h-5 sm:w-5 text-white" />
             </div>
-            <div>
-              <span className="text-xl font-extrabold text-slate-900 tracking-tight block leading-tight">
+            <div className="min-w-0">
+              <span className="text-sm sm:text-base md:text-xl font-black text-slate-900 tracking-tight block leading-tight">
                 CMS Beranda
               </span>
               {adminUser && (
-                <span className="text-xs text-slate-400 font-medium">Halo, {adminUser.username} 👋</span>
+                <span className="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block truncate max-w-[120px] sm:max-w-none">
+                  Halo, {adminUser.username} 👋
+                </span>
               )}
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
             <button
               onClick={() => navigate('/admin/dashboard')}
-              className="flex items-center gap-2 px-3 py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              title="Dashboard"
             >
               <ArrowLeft className="h-4 w-4" />
               <span className="hidden sm:inline">Dashboard</span>
             </button>
             <button
               onClick={() => navigate('/admin/orders')}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#d99a45] text-white hover:bg-[#c4883b] rounded-xl transition-all text-sm font-bold shadow-sm"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-4 sm:py-2.5 bg-[#d99a45] text-white hover:bg-[#c4883b] rounded-xl transition-all text-xs sm:text-sm font-bold shadow-sm"
+              title="Pesanan"
             >
               <ClipboardList className="h-4 w-4" />
               <span className="hidden sm:inline">Pesanan</span>
             </button>
             <button
               onClick={() => navigate('/')}
-              className="flex items-center gap-2 px-3 py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              title="Toko"
             >
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">Toko</span>
             </button>
             <button
               onClick={onLogout}
-              className="flex items-center gap-2 px-3 py-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors text-sm font-bold"
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-3 sm:py-2.5 text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-colors text-xs sm:text-sm font-bold"
+              title="Logout"
             >
               <LogOut className="h-4 w-4" />
               <span className="hidden sm:inline">Logout</span>
