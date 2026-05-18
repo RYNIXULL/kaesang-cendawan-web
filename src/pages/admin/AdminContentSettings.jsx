@@ -3,7 +3,7 @@ import {
   Image, FileText, LayoutGrid, Plus, Trash2, Save,
   ArrowLeft, Loader2, Eye, EyeOff, RefreshCw, Store,
   Home, LogOut, ClipboardList, Settings, Upload,
-  Share2, ShoppingBag, Mail
+  Share2, ShoppingBag, Mail, Truck, CreditCard
 } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 import { API_URL } from '../../config/api';
@@ -173,6 +173,9 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
   const [aboutText, setAboutText] = useState('');
   const [galleryItems, setGalleryItems] = useState([]);
 
+  const [shippingMethods, setShippingMethods] = useState([]);
+  const [bankAccounts, setBankAccounts] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [heroPreviewError, setHeroPreviewError] = useState(false);
@@ -249,6 +252,8 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
         shopee: '',
         gmail: ''
       });
+      setShippingMethods(Array.isArray(data.shipping_methods) ? data.shipping_methods : []);
+      setBankAccounts(Array.isArray(data.bank_accounts) ? data.bank_accounts : []);
     } catch (err) {
       addToast(`❌ ${err.message}`, 'error', 4000);
     } finally {
@@ -278,6 +283,57 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
     }
   };
 
+  // ── Shipping Methods Helpers ──
+  const handleShippingChange = (index, field, value) => {
+    setShippingMethods(prev => prev.map((item, i) => i === index ? { ...item, [field]: value } : item));
+  };
+
+  const handleShippingRateChange = (index, rateField, value) => {
+    setShippingMethods(prev => prev.map((item, i) => {
+      if (i === index) {
+        return {
+          ...item,
+          rates: {
+            ...(item.rates || { base: 0, lampung: 0, jawa: 0, luar: 0 }),
+            [rateField]: Number(value) || 0
+          }
+        };
+      }
+      return item;
+    }));
+  };
+
+  const addShippingMethod = () => {
+    setShippingMethods(prev => [
+      ...prev,
+      { id: `Courier-${Date.now()}`, name: '', icon: '🚚', eta: '2-3 Hari', rates: { base: 10000, lampung: 10000, jawa: 10000, luar: 10000 } }
+    ]);
+  };
+
+  const removeShippingMethod = (index) => {
+    if (window.confirm('Hapus metode pengiriman ini?')) {
+      setShippingMethods(prev => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  // ── Bank Accounts Helpers ──
+  const handleBankChange = (index, field, value) => {
+    setBankAccounts(prev => prev.map((item, i) => i === index ? { ...item, [field]: value } : item));
+  };
+
+  const addBankAccount = () => {
+    setBankAccounts(prev => [
+      ...prev,
+      { bank: 'BRI', accountNumber: '', accountHolder: '', note: 'Cantumkan No. Pesanan #{orderId} pada berita transfer' }
+    ]);
+  };
+
+  const removeBankAccount = (index) => {
+    if (window.confirm('Hapus rekening bank ini?')) {
+      setBankAccounts(prev => prev.filter((_, i) => i !== index));
+    }
+  };
+
   // ── Simpan perubahan ──────────────────────────────────────
   const handleSave = async () => {
     if (!heroImage.trim()) {
@@ -296,7 +352,9 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
           hero_image: heroImage.trim(),
           about_text: aboutText.trim(),
           gallery_images: galleryItems,
-          social_links: socialLinks
+          social_links: socialLinks,
+          shipping_methods: shippingMethods,
+          bank_accounts: bankAccounts
         })
       });
       if (!res.ok) {
@@ -594,6 +652,254 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
                     />
                   </FormField>
                 </div>
+              </div>
+            </div>
+
+            {/* ══ SECTION 5: Metode Pengiriman ══════════════════ */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="bg-[#4a7c59]/10 p-2 rounded-lg">
+                    <Truck className="h-5 w-5 text-[#4a7c59]" />
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-slate-800">Metode Pengiriman</h2>
+                    <p className="text-xs text-slate-400">{shippingMethods.length} metode terdaftar</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={addShippingMethod}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#4a7c59] text-white rounded-xl text-sm font-bold hover:bg-[#3a6347] transition-colors shadow-sm hover:shadow-md"
+                >
+                  <Plus className="h-4 w-4" />
+                  Tambah Metode
+                </button>
+              </div>
+
+              <div className="p-6 space-y-6">
+                {shippingMethods.length === 0 ? (
+                  <div className="text-center py-12 text-slate-400">
+                    <Truck className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                    <p className="font-medium">Belum ada metode pengiriman.</p>
+                    <p className="text-sm mt-1">Klik "Tambah Metode" untuk mulai menambahkan.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6 divide-y divide-slate-100">
+                    {shippingMethods.map((method, index) => (
+                      <div key={method.id || index} className={`pt-6 ${index === 0 ? 'pt-0' : ''} space-y-4`}>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            Metode #{index + 1}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeShippingMethod(index)}
+                            className="text-red-500 hover:text-red-700 p-1.5 hover:bg-red-50 rounded-lg transition-colors text-xs font-bold flex items-center gap-1"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Hapus
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">ID Kurir</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="Kaesang Express"
+                              value={method.id || ''}
+                              onChange={e => handleShippingChange(index, 'id', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm font-semibold text-slate-700"
+                            />
+                          </div>
+                          <div className="md:col-span-2">
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Nama Tampilan</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="Kaesang Express (Internal)"
+                              value={method.name || ''}
+                              onChange={e => handleShippingChange(index, 'name', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Icon (Emoji/Lucide)</label>
+                            <input
+                              type="text"
+                              placeholder="🚚"
+                              value={method.icon || ''}
+                              onChange={e => handleShippingChange(index, 'icon', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl text-center focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Estimasi (ETA)</label>
+                            <input
+                              type="text"
+                              placeholder="1-2 Hari"
+                              value={method.eta || ''}
+                              onChange={e => handleShippingChange(index, 'eta', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Biaya Base (Rp)</label>
+                            <input
+                              type="number"
+                              required
+                              placeholder="10000"
+                              value={method.rates?.base !== undefined ? method.rates.base : (method.cost || 0)}
+                              onChange={e => handleShippingRateChange(index, 'base', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Biaya Lampung (Rp)</label>
+                            <input
+                              type="number"
+                              required
+                              placeholder="10000"
+                              value={method.rates?.lampung !== undefined ? method.rates.lampung : (method.cost || 0)}
+                              onChange={e => handleShippingRateChange(index, 'lampung', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Biaya Jawa (Rp)</label>
+                            <input
+                              type="number"
+                              required
+                              placeholder="18000"
+                              value={method.rates?.jawa !== undefined ? method.rates.jawa : (method.cost || 0)}
+                              onChange={e => handleShippingRateChange(index, 'jawa', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Biaya Luar Jawa (Rp)</label>
+                            <input
+                              type="number"
+                              required
+                              placeholder="28000"
+                              value={method.rates?.luar !== undefined ? method.rates.luar : (method.cost || 0)}
+                              onChange={e => handleShippingRateChange(index, 'luar', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* ══ SECTION 6: Rekening Bank ═════════════════════ */}
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-[#f0f7f4] to-white">
+                <div className="flex items-center gap-3">
+                  <div className="bg-[#4a7c59]/10 p-2 rounded-lg">
+                    <CreditCard className="h-5 w-5 text-[#4a7c59]" />
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-slate-800">Rekening Bank Transfer</h2>
+                    <p className="text-xs text-slate-400">{bankAccounts.length} rekening terdaftar</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={addBankAccount}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#4a7c59] text-white rounded-xl text-sm font-bold hover:bg-[#3a6347] transition-colors shadow-sm hover:shadow-md"
+                >
+                  <Plus className="h-4 w-4" />
+                  Tambah Rekening
+                </button>
+              </div>
+
+              <div className="p-6 space-y-6">
+                {bankAccounts.length === 0 ? (
+                  <div className="text-center py-12 text-slate-400">
+                    <CreditCard className="h-12 w-12 mx-auto mb-3 opacity-30" />
+                    <p className="font-medium">Belum ada rekening bank.</p>
+                    <p className="text-sm mt-1">Klik "Tambah Rekening" untuk mulai menambahkan.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-6 divide-y divide-slate-100">
+                    {bankAccounts.map((account, index) => (
+                      <div key={index} className={`pt-6 ${index === 0 ? 'pt-0' : ''} space-y-4`}>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                            Rekening #{index + 1}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => removeBankAccount(index)}
+                            className="text-red-500 hover:text-red-700 p-1.5 hover:bg-red-50 rounded-lg transition-colors text-xs font-bold flex items-center gap-1"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                            Hapus
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Nama Bank</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="BRI"
+                              value={account.bank || ''}
+                              onChange={e => handleBankChange(index, 'bank', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm font-semibold text-slate-700"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Nomor Rekening</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="1234567890"
+                              value={account.accountNumber || ''}
+                              onChange={e => handleBankChange(index, 'accountNumber', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm font-semibold text-slate-700"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs font-bold text-slate-500 block mb-1">Nama Pemilik Rekening</label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="Kaesang Cendawan"
+                              value={account.accountHolder || ''}
+                              onChange={e => handleBankChange(index, 'accountHolder', e.target.value)}
+                              className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm font-semibold text-slate-700"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="text-xs font-bold text-slate-500 block mb-1">Catatan / Berita Transfer</label>
+                          <input
+                            type="text"
+                            placeholder="Cantumkan No. Pesanan #{orderId} pada berita transfer"
+                            value={account.note || ''}
+                            onChange={e => handleBankChange(index, 'note', e.target.value)}
+                            className="w-full px-3 py-2 bg-[#fcfaf8] border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#4a7c59]/20 focus:border-[#4a7c59] outline-none transition-all text-sm text-slate-600"
+                          />
+                          <p className="text-[10px] text-slate-400 mt-1">
+                            💡 Gunakan penanda <code>{"#{orderId}"}</code> untuk menyisipkan nomor pesanan secara otomatis saat ditampilkan ke pembeli.
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
 

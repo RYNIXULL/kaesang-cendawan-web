@@ -12,7 +12,7 @@ import { isValidIdMobile } from '../utils/phone';
 import { toArray } from '../utils/array';
 import { PAYMENT_METHODS, PAYMENT_METHOD_LABELS } from '../constants/checkout';
 
-const COURIER_OPTIONS = [
+const DEFAULT_COURIERS = [
   { id: 'Kaesang Express', name: 'Kaesang Express (Internal)', icon: '🍄', eta: '1-2 Hari', cost: 10000 },
   { id: 'JNE Regular', name: 'JNE Regular', icon: '🚚', eta: '2-3 Hari', cost: 18000 },
   { id: 'J&T Economy', name: 'J&T Economy', icon: '🚛', eta: '3-5 Hari', cost: 15000 },
@@ -23,6 +23,7 @@ export default function PaymentPage({ navigate }) {
   const { cart, formatRupiah, cartTotal, setCart } = useContext(ShopContext);
   const safeCart = toArray(cart);
 
+  const [courierOptions, setCourierOptions] = useState(DEFAULT_COURIERS);
   const [currentStep, setCurrentStep] = useState(1);
   const [recipientName, setRecipientName] = useState('');
   const [phone, setPhone] = useState('');
@@ -39,6 +40,35 @@ export default function PaymentPage({ navigate }) {
   const [shippingByCourier, setShippingByCourier] = useState({});
   const [shippingLoading, setShippingLoading] = useState(false);
   const [shippingError, setShippingError] = useState(null);
+
+  useEffect(() => {
+    const fetchCmsOptions = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/homepage-contents`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.shipping_methods) && data.shipping_methods.length > 0) {
+            const formatted = data.shipping_methods.map(m => ({
+              id: m.id,
+              name: m.name,
+              icon: m.icon || '🚚',
+              eta: m.eta || '2-3 Hari',
+              cost: m.rates?.base !== undefined ? m.rates.base : (m.cost || 0),
+              rates: m.rates
+            }));
+            setCourierOptions(formatted);
+            const hasKaesang = formatted.some(c => c.id === 'Kaesang Express');
+            if (!hasKaesang && formatted.length > 0) {
+              setSelectedCourier(formatted[0].id);
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load dynamic shipping methods:', err);
+      }
+    };
+    fetchCmsOptions();
+  }, []);
 
   useEffect(() => {
     if (safeCart.length === 0 && !orderResult) {
@@ -66,7 +96,7 @@ export default function PaymentPage({ navigate }) {
       setShippingError(null);
       try {
         const pairs = await Promise.all(
-          COURIER_OPTIONS.map(async (c) => {
+          courierOptions.map(async (c) => {
             const res = await fetch(`${API_URL}/api/shipping/calculate`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -90,10 +120,11 @@ export default function PaymentPage({ navigate }) {
       clearTimeout(t);
       ac.abort();
     };
-  }, [address, city]);
+  }, [address, city, courierOptions]);
 
   const selectedQuote = shippingByCourier[selectedCourier];
-  const zoneQuote = shippingByCourier['Kaesang Express'];
+  const internalCourierId = courierOptions[0]?.id || 'Kaesang Express';
+  const zoneQuote = shippingByCourier[internalCourierId];
   const serviceFee = 2000;
   const shippingCost =
     selectedQuote != null
@@ -257,7 +288,7 @@ export default function PaymentPage({ navigate }) {
               <div className="bg-blue-50 border border-blue-100 rounded-3xl p-6 space-y-4">
                 <h3 className="font-bold text-blue-900 flex items-center gap-2">
                   <CreditCard className="h-5 w-5" />
-                  Instruksi Transfer Bank BRI
+                  Instruksi Transfer Bank {orderResult.paymentInstructions.bank}
                 </h3>
                 <div className="bg-white rounded-2xl p-4 space-y-3 text-sm">
                   <div className="flex justify-between">
@@ -400,7 +431,7 @@ export default function PaymentPage({ navigate }) {
                     <h2 className="font-bold">Pilih Metode Pengiriman</h2>
                   </div>
                   <div className="grid gap-3">
-                    {COURIER_OPTIONS.map((courier) => (
+                    {courierOptions.map((courier) => (
                       <CourierCard
                         key={courier.id}
                         courier={courier}
