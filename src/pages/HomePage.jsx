@@ -348,6 +348,64 @@ const ProductSection = ({ filteredProducts, formatRupiah, addToCart, addToast, s
   );
 };
 
+const FAQSection = () => {
+  const faqs = [
+    {
+      q: "Dimana lokasi Kaesang Cendawan?",
+      a: "Kaesang Cendawan berlokasi di Pakuan Sakti, Pakuan Ratu, Way Kanan, Lampung. Kami membudidayakan jamur tiram dan kuping organik premium langsung dari kebun kami sendiri."
+    },
+    {
+      q: "Apakah Kaesang Cendawan melayani pengiriman ke luar daerah?",
+      a: "Ya, kami melayani pengiriman jamur segar ke berbagai daerah dengan pengemasan yang aman dan higienis untuk menjaga kesegaran jamur hingga sampai ke tangan Anda."
+    },
+    {
+      q: "Jamur apa saja yang dijual di Kaesang Cendawan?",
+      a: "Kami memproduksi dan menjual jamur tiram serta jamur kuping segar organik berkualitas tinggi. Kami juga menyediakan baglog jamur bagi Anda yang ingin mencoba budidaya sendiri di rumah."
+    },
+    {
+      q: "Bagaimana cara memesan jamur dalam jumlah besar (grosir)?",
+      a: "Untuk pemesanan dalam skala besar (grosir) untuk restoran, pasar, atau agen, Anda dapat langsung menghubungi kami melalui tombol WhatsApp yang tersedia agar mendapatkan harga khusus."
+    }
+  ];
+
+  const [openIndex, setOpenIndex] = useState(null);
+
+  return (
+    <section className="bg-white py-20 px-4 border-t border-slate-200/50 w-full relative z-10">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[#4a7c59] text-xs font-black uppercase tracking-widest mb-3">
+            <MessageCircle className="h-3.5 w-3.5" />
+            <span>Tanya Jawab</span>
+          </div>
+          <h2 className="text-3xl font-black text-slate-800 tracking-tight mb-4">Pertanyaan Seputar Kaesang Cendawan</h2>
+          <p className="text-slate-500 text-sm font-semibold">Jawaban cepat untuk hal-hal yang paling sering ditanyakan pelanggan kami.</p>
+        </div>
+        <div className="space-y-4">
+          {faqs.map((faq, idx) => (
+            <div key={idx} className="border border-slate-200 rounded-2xl overflow-hidden transition-all duration-300 hover:border-emerald-200 hover:shadow-md">
+              <button
+                onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
+                className="w-full text-left px-6 py-4 flex justify-between items-center bg-slate-50 hover:bg-emerald-50/30 transition-colors"
+              >
+                <span className="font-bold text-slate-800 text-sm sm:text-base">{faq.q}</span>
+                <span className={`transform transition-transform duration-300 ${openIndex === idx ? 'rotate-180 text-[#4a7c59]' : 'text-slate-400'}`}>
+                  ▼
+                </span>
+              </button>
+              <div 
+                className={`px-6 overflow-hidden transition-all duration-500 ease-in-out ${openIndex === idx ? 'max-h-40 py-4 opacity-100' : 'max-h-0 opacity-0'}`}
+              >
+                <p className="text-slate-600 text-sm leading-relaxed">{faq.a}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const LocationSection = () => {
   return (
     <section className="bg-transparent py-20 px-4 border-t border-slate-200/50 w-full relative overflow-hidden">
@@ -509,6 +567,7 @@ export default function HomePage({ navigate, isAdmin }) {
         </div>
 
         <ProductSection filteredProducts={filteredProducts} formatRupiah={formatRupiah} addToCart={addToCart} addToast={addToast} searchQuery={searchQuery} setSearchQuery={setSearchQuery} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} categories={categories} />
+        <FAQSection />
         <LocationSection />
       </div>
       
