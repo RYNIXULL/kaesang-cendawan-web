@@ -270,7 +270,7 @@ const StatsSection = ({ stats }) => {
 
 const ProductSection = ({ filteredProducts, formatRupiah, addToCart, addToast, searchQuery, setSearchQuery, selectedCategory, setSelectedCategory, categories }) => {
   return (
-    <section id="produk" className="bg-[#fcfaf8] py-20 px-4 w-full border-t border-slate-100">
+    <section id="produk" className="bg-transparent py-20 px-4 w-full border-t border-slate-200/50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-[#4a7c59] text-xs font-black uppercase tracking-widest mb-3">
@@ -350,7 +350,7 @@ const ProductSection = ({ filteredProducts, formatRupiah, addToCart, addToast, s
 
 const LocationSection = () => {
   return (
-    <section className="bg-white py-20 px-4 border-t border-slate-100 w-full relative overflow-hidden">
+    <section className="bg-transparent py-20 px-4 border-t border-slate-200/50 w-full relative overflow-hidden">
       <div className="absolute top-[-10%] right-[-10%] w-[35%] h-[35%] bg-emerald-100/15 rounded-full blur-[80px] pointer-events-none" />
       <div className="max-w-6xl mx-auto relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -480,7 +480,12 @@ export default function HomePage({ navigate, isAdmin }) {
   ];
 
   return (
-    <div className="font-sans text-slate-800 bg-slate-50 min-h-screen flex flex-col w-full overflow-x-hidden">
+    <div className="font-sans text-slate-800 bg-gradient-to-tr from-[#f8faf8] via-[#f0f6f2] to-[#f9f7f2] min-h-screen flex flex-col w-full overflow-x-hidden relative">
+      {/* Dynamic Ambient Background Blobs */}
+      <div className="absolute top-[20%] left-[-15%] w-[60%] h-[30%] bg-emerald-100/40 rounded-full blur-[140px] pointer-events-none z-0" />
+      <div className="absolute top-[45%] right-[-15%] w-[55%] h-[25%] bg-amber-100/30 rounded-full blur-[120px] pointer-events-none z-0" />
+      <div className="absolute top-[70%] left-[-10%] w-[50%] h-[25%] bg-emerald-50/50 rounded-full blur-[130px] pointer-events-none z-0" />
+
       <Navbar
         onCartClick={() => navigate('/cart')}
         onTrackClick={() => navigate('/track')}
@@ -493,7 +498,7 @@ export default function HomePage({ navigate, isAdmin }) {
       
       <BackToTop />
       
-      <div className="w-full flex-grow flex flex-col items-center justify-start">
+      <div className="w-full flex-grow flex flex-col items-center justify-start relative z-10">
         <HeroSection />
         <StatsSection stats={stats} />
         

@@ -37,15 +37,6 @@ const About = ({ text, image }) => {
                 </p>
               ))}
             </div>
-            <div className="mt-8 pt-6 border-t border-slate-100 flex items-center gap-3.5">
-              <div className="bg-[#4a7c59]/10 p-2.5 rounded-xl">
-                <Award className="h-5 w-5 text-[#4a7c59]" />
-              </div>
-              <div>
-                <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider">Kualitas Terjamin</h4>
-                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Sertifikasi & Uji Mutu Berkala</p>
-              </div>
-            </div>
           </div>
 
           {/* Bagian Gambar */}
