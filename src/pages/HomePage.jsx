@@ -1,6 +1,7 @@
 import { useContext, useState, useRef, useCallback, useEffect, useMemo } from 'react';
-import { ShoppingCart, Package, MapPin, MessageCircle, Star, TrendingUp, Award, Users, ArrowRight, Sparkles, Flower, Leaf, Search, ShoppingBag, Mail } from 'lucide-react';
+import { ShoppingCart, Package, MapPin, MessageCircle, Star, TrendingUp, Award, Users, ArrowRight, Sparkles, Flower, Leaf, Search, ShoppingBag, Mail, User, LogIn, LogOut } from 'lucide-react';
 import { ShopContext } from '../context/ShopContext';
+import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
 import BackToTop from '../components/BackToTop';
 import SearchFilter from '../components/SearchFilter';
@@ -24,7 +25,9 @@ const FacebookIcon = (props) => (
   </svg>
 );
 
-const Navbar = ({ onCartClick, onTrackClick, onAdminClick, cartCount, isAdmin, onLogoClick, clickProgress }) => {
+const Navbar = ({ onCartClick, onTrackClick, onAdminClick, onLoginClick, cartCount, isAdmin, onLogoClick, clickProgress }) => {
+  const { user, logout } = useAuth();
+
   return (
     <nav className="bg-white/80 backdrop-blur-xl text-slate-800 py-3.5 px-4 sticky top-0 z-50 shadow-sm border-b border-slate-200/80">
       <div className="max-w-7xl mx-auto flex justify-between items-center w-full px-4">
@@ -74,6 +77,37 @@ const Navbar = ({ onCartClick, onTrackClick, onAdminClick, cartCount, isAdmin, o
               <Package className="h-4 w-4" />
               <span>Dashboard</span>
             </button>
+          )}
+
+          {/* Customer Authentication State */}
+          {!user ? (
+            <button
+              type="button"
+              onClick={onLoginClick}
+              className="flex items-center space-x-1.5 px-3 py-2 text-slate-600 hover:text-[#4a7c59] hover:bg-[#f0f7f4] rounded-xl transition-all text-xs sm:text-sm font-bold active:scale-95 border border-transparent hover:border-emerald-100"
+            >
+              <LogIn className="h-4 w-4" />
+              <span>Masuk</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="flex items-center bg-[#f0f7f4]/80 border border-emerald-100/50 rounded-xl px-2 py-1 sm:px-3 sm:py-1.5 gap-1.5 sm:gap-2 max-w-[120px] sm:max-w-[180px]">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 bg-[#4a7c59] text-white rounded-full flex items-center justify-center text-[10px] sm:text-xs font-black shrink-0 shadow-sm">
+                  <User className="h-3 w-3" />
+                </div>
+                <span className="text-[10px] sm:text-xs font-bold text-[#4a7c59] truncate">
+                  {user.phone ? user.phone : (user.user_metadata?.full_name || user.email || 'Pelanggan')}
+                </span>
+              </div>
+              <button
+                type="button"
+                onClick={logout}
+                className="p-1.5 sm:p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all active:scale-95"
+                title="Keluar"
+              >
+                <LogOut className="h-4 w-4" />
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -548,6 +582,7 @@ export default function HomePage({ navigate, isAdmin }) {
         onCartClick={() => navigate('/cart')}
         onTrackClick={() => navigate('/track')}
         onAdminClick={() => navigate('/admin/login')}
+        onLoginClick={() => navigate('/login')}
         cartCount={cartCount}
         isAdmin={isAdmin}
         onLogoClick={handleLogoClick}

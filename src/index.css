@@ -1,6 +1,16 @@
 @import "tailwindcss";
 
+/* ===== TAILWIND V4 THEME EXTENSIONS ===== */
+@theme {
+  --animate-modal-in: modalIn 0.25s ease-out;
+}
+
 /* ===== CUSTOM ANIMATIONS ===== */
+
+@keyframes modalIn {
+  0%   { opacity: 0; transform: scale(0.95); }
+  100% { opacity: 1; transform: scale(1); }
+}
 
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(40px); }

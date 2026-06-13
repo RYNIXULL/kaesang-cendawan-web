@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { LogIn, Home, Eye, EyeOff, Shield, Loader2 } from 'lucide-react';
+import { LogIn, Home, Eye, EyeOff, Shield, Loader2, Lock, AlertTriangle } from 'lucide-react';
 import { API_URL } from '../../config/api';
 
 export default function AdminLogin({ onLogin, navigate }) {
@@ -68,7 +68,7 @@ export default function AdminLogin({ onLogin, navigate }) {
               <Shield className="h-10 w-10 text-white -rotate-3 group-hover:rotate-0 transition-transform" />
             </div>
             <div className="absolute -top-1 -right-1 w-7 h-7 bg-[#d99a45] rounded-full flex items-center justify-center shadow-lg border-2 border-white animate-bounce">
-              <span className="text-white text-xs font-bold">🔐</span>
+              <Lock className="h-3.5 w-3.5 text-white" />
             </div>
           </div>
           <h2 className="text-2xl font-black text-slate-900 tracking-tight">Admin Portal</h2>
@@ -90,7 +90,7 @@ export default function AdminLogin({ onLogin, navigate }) {
         {/* Jumlah Percobaan Login */}
         {loginAttempts > 0 && (
           <div className="bg-amber-50 text-amber-700 p-3 rounded-2xl text-xs mb-4 border border-amber-100 flex items-center justify-center space-x-2">
-            <span className="text-amber-500 font-bold">⚠️</span>
+            <AlertTriangle className="h-4 w-4 text-amber-500 flex-shrink-0" />
             <span className="font-semibold">Jumlah percobaan login: <strong className="font-black text-slate-800">{loginAttempts}</strong></span>
           </div>
         )}

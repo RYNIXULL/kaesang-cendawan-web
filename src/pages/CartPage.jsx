@@ -1,12 +1,19 @@
 import { useContext } from 'react';
 import { ChevronLeft, ShoppingCart, Minus, Plus, Trash2, CheckCircle } from 'lucide-react';
 import { ShopContext } from '../context/ShopContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function CartPage({ navigate }) {
   const { cart, formatRupiah, removeFromCart, updateCartQuantity, cartTotal, cartCount } = useContext(ShopContext);
+  const { user } = useAuth();
 
   const handleCheckout = () => {
-    navigate('/checkout');
+    if (!user) {
+      sessionStorage.setItem('authRedirect', '/checkout');
+      navigate('/login');
+    } else {
+      navigate('/checkout');
+    }
   };
 
   return (

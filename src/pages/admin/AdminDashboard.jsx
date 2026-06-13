@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect, useCallback, useRef } from 'react';
-import { Package, Plus, Edit, Trash2, Home, LogOut, Store, DollarSign, ShoppingBag, AlertTriangle, ClipboardList, TrendingUp, Loader2, Upload, ImageIcon, Link2, Settings } from 'lucide-react';
+import { Package, Plus, Edit, Trash2, Home, LogOut, Store, DollarSign, ShoppingBag, AlertTriangle, ClipboardList, TrendingUp, Loader2, Upload, ImageIcon, Link2, Settings, Users } from 'lucide-react';
 import { ShopContext } from '../../context/ShopContext';
 import { API_URL } from '../../config/api';
 import { resolveProductImageUrl } from '../../utils/imageUrl';
@@ -19,6 +19,8 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
   const fileInputRef = useRef(null);
   const [dashboardStats, setDashboardStats] = useState(null);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [totalCustomers, setTotalCustomers] = useState(0);
+  const [customersLoading, setCustomersLoading] = useState(true);
 
   const totalProducts = products.length;
   const totalStock = products.reduce((sum, p) => sum + (p.stock || 0), 0);
@@ -74,6 +76,25 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
+  useEffect(() => {
+    const fetchCustomersCount = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/admin/users`, {
+          headers: { 'Authorization': `Bearer ${adminToken}` }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setTotalCustomers(data.users?.length || 0);
+        }
+      } catch (err) {
+        console.error('Gagal fetch customer count:', err);
+      } finally {
+        setCustomersLoading(false);
+      }
+    };
+    fetchCustomersCount();
+  }, [adminToken]);
 
   const openAddForm = () => {
     setFormData({ name: '', price: '', stock: '', description: '', category: '', image: '' });
@@ -131,7 +152,7 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
       setImagePreview(resolveProductImageUrl(data.url));
     } catch (err) {
       console.error('Upload gambar gagal:', err);
-      alert(`❌ ${err.message}`);
+      alert(`Gagal unggah: ${err.message}`);
       setImagePreview(formData.image ? resolveProductImageUrl(formData.image) : '');
     } finally {
       setImageUploading(false);
@@ -152,7 +173,7 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
         }
         await fetchProducts();
       } catch (err) {
-        alert(`❌ Gagal menghapus produk: ${err.message}`);
+        alert(`Gagal menghapus produk: ${err.message}`);
       }
     }
   };
@@ -224,7 +245,7 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
       resetImageState();
     } catch (err) {
       console.error('Gagal menyimpan data:', err);
-      alert(`❌ ${err.message}`);
+      alert(`Gagal menyimpan: ${err.message}`);
     }
   };
 
@@ -242,7 +263,7 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
               </span>
               {adminUser && (
                 <span className="text-[10px] sm:text-xs text-slate-400 font-semibold hidden sm:block truncate max-w-[120px] sm:max-w-none">
-                  Halo, {adminUser.username} 👋
+                  Halo, {adminUser.username}
                 </span>
               )}
             </div>
@@ -261,6 +282,15 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
                   {dashboardStats.orders.pending_count}
                 </span>
               )}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/admin/users')}
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-4 sm:py-2.5 bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-lg hover:shadow-indigo-600/20 rounded-xl transition-all text-xs sm:text-sm font-bold shadow-sm active:scale-95"
+              title="Pelanggan"
+            >
+              <Users className="h-4 w-4" />
+              <span className="hidden sm:inline">Pelanggan</span>
             </button>
             <button
               type="button"
@@ -295,7 +325,7 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
 
       <div className="container mx-auto px-4 py-8">
         {/* Modern SaaS Stat Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
           <div className="bg-gradient-to-br from-emerald-50 to-teal-50/30 p-6 rounded-3xl shadow-sm border border-emerald-100 hover:border-emerald-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:-translate-y-1 transition-all duration-300 group">
             <div className="flex items-center justify-between mb-4">
               <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-3 rounded-2xl shadow-md shadow-emerald-500/10 group-hover:scale-110 transition-transform">
@@ -333,6 +363,22 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
             ) : (
               <h3 className="text-2xl font-black text-slate-800 tracking-tight mt-1">
                 {dashboardStats?.orders?.total_orders || 0}
+              </h3>
+            )}
+          </div>
+
+          <div className="bg-gradient-to-br from-indigo-50 to-blue-50/30 p-6 rounded-3xl shadow-sm border border-indigo-100 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 group">
+            <div className="flex items-center justify-between mb-4">
+              <div className="bg-gradient-to-br from-indigo-500 to-blue-600 p-3 rounded-2xl shadow-md shadow-indigo-500/10 group-hover:scale-110 transition-transform">
+                <Users className="h-6 w-6 text-white" />
+              </div>
+            </div>
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Pelanggan</p>
+            {customersLoading ? (
+              <Loader2 className="h-7 w-7 animate-spin text-slate-300 mt-2" />
+            ) : (
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight mt-1">
+                {totalCustomers}
               </h3>
             )}
           </div>
@@ -393,7 +439,8 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
             </button>
           </div>
 
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-slate-50/80 text-slate-500 text-[10px] font-black uppercase tracking-widest border-b border-slate-100">
@@ -474,6 +521,73 @@ export default function AdminDashboard({ navigate, onLogout, adminToken, adminUs
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile List View */}
+          <div className="md:hidden divide-y divide-slate-100">
+            {products.map((p) => (
+              <div key={p.id} className="p-5 space-y-3.5">
+                <div className="flex items-center space-x-3">
+                  <img
+                    src={resolveProductImageUrl(p.image)}
+                    alt={p.name}
+                    className="w-11 h-11 rounded-xl object-cover bg-slate-50 border border-slate-200 flex-shrink-0"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = 'https://images.unsplash.com/photo-1504264669645-31c3bfdb687b?auto=format&fit=crop&w=100&q=60';
+                    }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <h4 className="font-extrabold text-slate-800 text-sm tracking-tight truncate">{p.name}</h4>
+                    <span className="inline-block bg-[#f0f7f4] text-[#4a7c59] text-[9px] font-black px-2 py-0.5 rounded uppercase mt-0.5">
+                      {p.category}
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-1 flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => openEditForm(p)}
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-xl transition-colors active:scale-95"
+                      title="Edit"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(p.id)}
+                      className="p-2 text-red-500 hover:bg-red-50 rounded-xl transition-colors active:scale-95"
+                      title="Hapus"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+                <p className="text-xs text-slate-400 font-semibold line-clamp-2">{p.description}</p>
+                <div className="flex justify-between items-center text-xs pt-1">
+                  <div>
+                    <span className="text-slate-400 font-bold uppercase tracking-wider text-[9px] block">Harga</span>
+                    <span className="font-bold text-slate-700">{formatRupiah(p.price)}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 font-bold uppercase tracking-wider text-[9px] block text-right">Stok</span>
+                    <span
+                      className={`inline-block font-extrabold px-2.5 py-1 rounded-lg text-xs mt-0.5 ${
+                        p.stock <= 5 
+                          ? 'bg-red-50 text-red-600 border border-red-100 animate-pulse' 
+                          : 'bg-slate-50 text-slate-700 border border-slate-100'
+                      }`}
+                    >
+                      {p.stock} unit
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+            {products.length === 0 && (
+              <div className="py-16 text-center text-slate-400 font-semibold text-sm">
+                Belum ada produk di inventori Anda.
+              </div>
+            )}
           </div>
         </div>
       </div>

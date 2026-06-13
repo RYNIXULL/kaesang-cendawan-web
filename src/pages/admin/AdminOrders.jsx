@@ -3,7 +3,7 @@ import {
   ClipboardList, Home, LogOut, Store, ChevronLeft, Package, 
   Truck, CheckCircle2, Clock, Filter, RefreshCw, Eye, 
   DollarSign, TrendingUp, MapPin, Phone, User, FileText, 
-  ChevronDown, Loader2, Search, XCircle, Settings
+  ChevronDown, Loader2, Search, XCircle, Settings, Users
 } from 'lucide-react';
 
 import { API_URL } from '../../config/api';
@@ -258,6 +258,14 @@ export default function AdminOrders({ navigate, onLogout, adminToken }) {
             >
               <Settings className="h-4 w-4" />
               <span className="hidden sm:inline">CMS Beranda</span>
+            </button>
+            <button
+              onClick={() => navigate('/admin/users')}
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-4 sm:py-2.5 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all text-xs sm:text-sm font-bold active:scale-95"
+              title="Pelanggan"
+            >
+              <Users className="h-4 w-4" />
+              <span className="hidden sm:inline">Pelanggan</span>
             </button>
             <button 
               onClick={() => navigate('/')}

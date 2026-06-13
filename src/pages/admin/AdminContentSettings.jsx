@@ -3,7 +3,7 @@ import {
   Image, FileText, LayoutGrid, Plus, Trash2, Save,
   ArrowLeft, Loader2, Eye, EyeOff, RefreshCw, Store,
   Home, LogOut, ClipboardList, Settings, Upload,
-  Share2, ShoppingBag, Mail, Truck, CreditCard
+  Share2, ShoppingBag, Mail, Truck, CreditCard, Users
 } from 'lucide-react';
 import { useToast } from '../../components/Toast';
 import { API_URL } from '../../config/api';
@@ -61,7 +61,7 @@ const GalleryCard = ({ item, index, onChange, onRemove, onUpload }) => {
       onChange(index, 'image', resultUrl);
       setPreviewError(false);
     } catch (err) {
-      alert(`❌ Gagal mengunggah gambar: ${err.message}`);
+      alert(`Gagal mengunggah gambar: ${err.message}`);
     } finally {
       setUploading(false);
     }
@@ -211,13 +211,13 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      addToast('❌ Pilih file gambar (JPG, PNG, WEBP, atau GIF).', 'error', 3000);
+      addToast('Pilih file gambar (JPG, PNG, WEBP, atau GIF).', 'error', 3000);
       e.target.value = '';
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      addToast('❌ Ukuran gambar maksimal 5 MB.', 'error', 3000);
+      addToast('Ukuran gambar maksimal 5 MB.', 'error', 3000);
       e.target.value = '';
       return;
     }
@@ -227,10 +227,10 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
       const resultUrl = await uploadImageFile(file);
       setHeroImage(resultUrl);
       setHeroPreviewError(false);
-      addToast('✅ Gambar Hero berhasil diunggah!', 'success', 2000);
+      addToast('Gambar Hero berhasil diunggah!', 'success', 2000);
     } catch (err) {
       console.error('Upload hero gagal:', err);
-      addToast(`❌ Gagal mengunggah gambar: ${err.message}`, 'error', 3000);
+      addToast(`Gagal mengunggah gambar: ${err.message}`, 'error', 3000);
     } finally {
       setHeroUploading(false);
     }
@@ -255,7 +255,7 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
       setShippingMethods(Array.isArray(data.shipping_methods) ? data.shipping_methods : []);
       setBankAccounts(Array.isArray(data.bank_accounts) ? data.bank_accounts : []);
     } catch (err) {
-      addToast(`❌ ${err.message}`, 'error', 4000);
+      addToast(err.message, 'error', 4000);
     } finally {
       setLoading(false);
     }
@@ -361,9 +361,9 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
         const err = await res.json().catch(() => ({}));
         throw new Error(err.error || `Server error ${res.status}`);
       }
-      addToast('✅ Konten beranda berhasil disimpan!', 'success', 3500);
+      addToast('Konten beranda berhasil disimpan!', 'success', 3500);
     } catch (err) {
-      addToast(`❌ Gagal menyimpan: ${err.message}`, 'error', 4000);
+      addToast(`Gagal menyimpan: ${err.message}`, 'error', 4000);
     } finally {
       setSaving(false);
     }
@@ -408,6 +408,14 @@ export default function AdminContentSettings({ navigate, onLogout, adminToken, a
             >
               <ClipboardList className="h-4 w-4" />
               <span className="hidden sm:inline">Pesanan</span>
+            </button>
+            <button
+              onClick={() => navigate('/admin/users')}
+              className="flex items-center space-x-1 sm:space-x-2 p-2 sm:px-4 sm:py-2.5 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all text-xs sm:text-sm font-bold active:scale-95"
+              title="Pelanggan"
+            >
+              <Users className="h-4 w-4" />
+              <span className="hidden sm:inline">Pelanggan</span>
             </button>
             <button
               onClick={() => navigate('/')}

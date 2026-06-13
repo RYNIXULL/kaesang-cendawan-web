@@ -5,6 +5,7 @@ import {
   CreditCard, ShieldCheck, Info, ChevronRight, Banknote, Copy
 } from 'lucide-react';
 import { ShopContext } from '../context/ShopContext';
+import { useAuth } from '../context/AuthContext';
 import CourierCard from '../components/checkout/CourierCard';
 import PaymentMethodCard from '../components/checkout/PaymentMethodCard';
 import { API_URL } from '../config/api';
@@ -22,6 +23,7 @@ const DEFAULT_COURIERS = [
 export default function PaymentPage({ navigate }) {
   const { cart, formatRupiah, cartTotal, setCart } = useContext(ShopContext);
   const safeCart = toArray(cart);
+  const { user, loading: authLoading } = useAuth();
 
   const [courierOptions, setCourierOptions] = useState(DEFAULT_COURIERS);
   const [currentStep, setCurrentStep] = useState(1);
@@ -40,6 +42,17 @@ export default function PaymentPage({ navigate }) {
   const [shippingByCourier, setShippingByCourier] = useState({});
   const [shippingLoading, setShippingLoading] = useState(false);
   const [shippingError, setShippingError] = useState(null);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-[#fcfaf8] flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-12 w-12 text-[#4a7c59] animate-spin mx-auto mb-4" />
+          <p className="text-slate-500 font-medium">Memuat Sesi...</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     const fetchCmsOptions = async () => {
@@ -71,10 +84,15 @@ export default function PaymentPage({ navigate }) {
   }, []);
 
   useEffect(() => {
+    if (!authLoading && !user) {
+      sessionStorage.setItem('authRedirect', '/checkout');
+      navigate('/login');
+      return;
+    }
     if (safeCart.length === 0 && !orderResult) {
       navigate('/');
     }
-  }, [safeCart.length, navigate, orderResult]);
+  }, [user, authLoading, safeCart.length, navigate, orderResult]);
 
   useEffect(() => {
     const ac = new AbortController();

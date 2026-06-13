@@ -2,6 +2,8 @@ import { createContext, useState, useEffect, useMemo, useCallback } from 'react'
 import { API_URL } from '../config/api';
 import { toArray } from '../utils/array';
 import { resolveProductImageUrl } from '../utils/imageUrl';
+import { useAuth } from './AuthContext';
+import useDebounce from '../hooks/useDebounce';
 
 const initialProducts = [
   {
@@ -58,10 +60,14 @@ function normalizeProduct(p) {
 // eslint-disable-next-line react-refresh/only-export-components
 export const ShopContext = createContext();
 export const ShopProvider = ({ children }) => {
+  const { user, session } = useAuth();
   const [products, setProducts] = useState(initialProducts);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  // Tracks pending quantity updates for debounced server sync
+  const [pendingUpdates, setPendingUpdates] = useState({});
+  const debouncedPendingUpdates = useDebounce(pendingUpdates, 800);
 
   useEffect(() => {
     let cancelled = false;
@@ -97,17 +103,88 @@ export const ShopProvider = ({ children }) => {
     }).format(number);
   }, []);
 
+  // === API FETCH: GET cart from server ===
+  // TODO: Replace with your actual backend endpoint
+  // Example: GET ${API_URL}/api/cart (with Authorization header using session.access_token)
+  // Expected response: { items: [{ product_id, quantity, ...product_data }] }
+  // After fetch, call setCart(normalizedItems)
+  const fetchCartServer = useCallback(async () => {
+    if (!session?.access_token) return;
+    try {
+      console.log('[ShopContext] fetchCartServer: would fetch cart from server');
+      // Placeholder — connect to your Docker backend when ready:
+      // const res = await fetch(`${API_URL}/api/cart`, {
+      //   headers: { Authorization: `Bearer ${session.access_token}` }
+      // });
+      // const data = await res.json();
+      // const items = toArray(data, ['items', 'data']).map(normalizeProduct);
+      // setCart(items);
+      setCart([]);
+    } catch (err) {
+      console.error('[ShopContext] fetchCartServer error:', err);
+    }
+  }, [session]);
+
+  // Load cart from server (logged in) or localStorage (guest)
+  useEffect(() => {
+    if (user) {
+      fetchCartServer();
+    } else {
+      try {
+        const saved = localStorage.getItem('guest_cart');
+        if (saved) setCart(JSON.parse(saved));
+      } catch (err) {
+        console.error('[ShopContext] Failed to load guest cart:', err);
+      }
+    }
+  }, [user, fetchCartServer]);
+
+  // Save cart to localStorage when user is NOT logged in (guest cart sync)
+  useEffect(() => {
+    if (!user) {
+      localStorage.setItem('guest_cart', JSON.stringify(cart));
+    }
+  }, [cart, user]);
+
+  // === API UPDATE: Sync debounced quantity changes to server ===
+  // TODO: Replace with your actual backend endpoint
+  // Example: PATCH ${API_URL}/api/cart/items/${productId} { quantity }
+  // Use session.access_token for authorization
+  useEffect(() => {
+    if (!user || !session?.access_token) return;
+    const entries = Object.entries(debouncedPendingUpdates);
+    if (entries.length === 0) return;
+
+    // Placeholder — send each pending update to the server
+    entries.forEach(([productId, quantity]) => {
+      console.log(`[ShopContext] Syncing quantity for product ${productId}: ${quantity}`);
+      // fetch(`${API_URL}/api/cart/items/${productId}`, {
+      //   method: 'PATCH',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //     Authorization: `Bearer ${session.access_token}`
+      //   },
+      //   body: JSON.stringify({ quantity })
+      // });
+    });
+
+    setPendingUpdates({});
+  }, [debouncedPendingUpdates, user, session]);
+
   const addToCart = useCallback((product) => {
     if (product.stock <= 0) return;
     setCart(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
         if (existing.quantity >= product.stock) return prev;
-        return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+        const newQty = existing.quantity + 1;
+        if (user) setPendingUpdates(prev => ({ ...prev, [product.id]: newQty }));
+        return prev.map(item => item.id === product.id ? { ...item, quantity: newQty } : item);
       }
+      if (user) setPendingUpdates(prev => ({ ...prev, [product.id]: 1 }));
       return [...prev, { ...product, quantity: 1 }];
     });
-  }, []);
+  }, [user]);
 
   const removeFromCart = useCallback((id) => {
     setCart(prev => prev.filter(item => item.id !== id));
@@ -119,12 +196,14 @@ export const ShopProvider = ({ children }) => {
         const product = products.find(p => p.id === id);
         const newQuantity = item.quantity + delta;
         if (newQuantity > 0 && newQuantity <= (product?.stock || 0)) {
+          // Queue debounced server sync when user is logged in
+          if (user) setPendingUpdates(prev => ({ ...prev, [id]: newQuantity }));
           return { ...item, quantity: newQuantity };
         }
       }
       return item;
     }));
-  }, [products]);
+  }, [products, user]);
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -142,7 +221,7 @@ export const ShopProvider = ({ children }) => {
     cartCount,
     loading,
     error
-  }), [products, cart, formatRupiah, addToCart, removeFromCart, updateCartQuantity, cartTotal, cartCount, loading, error]);
+  }), [products, cart, formatRupiah, addToCart, removeFromCart, updateCartQuantity, cartTotal, cartCount, loading, error, user]);
 
   return (
     <ShopContext.Provider value={value}>

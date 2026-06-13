@@ -7,7 +7,10 @@ import AdminLogin from './pages/admin/AdminLogin';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminContentSettings from './pages/admin/AdminContentSettings';
+import AdminUsers from './pages/admin/AdminUsers';
 import TrackOrder from './pages/TrackOrder';
+import UserLoginPage from './pages/UserLoginPage';
+import { useAuth } from './context/AuthContext';
 import { API_URL } from './config/api';
 
 function App() {
@@ -15,6 +18,56 @@ function App() {
   const [adminToken, setAdminToken] = useState(() => localStorage.getItem('adminToken') || null);
   const [adminUser, setAdminUser] = useState(null);
   const [isVerifying, setIsVerifying] = useState(true);
+
+  const { user, loading: authLoading } = useAuth();
+
+  const navigate = (path) => {
+    if (path === '/') setView('home');
+    else if (path === '/cart') setView('cart');
+    else if (path === '/checkout') setView('checkout');
+    else if (path === '/track' || path === '/orders/track') setView('track');
+    else if (path === '/login') setView('login');
+    else if (path === '/admin/login') {
+      // Jika sudah login, langsung ke dashboard
+      if (adminToken) {
+        setView('admin-dashboard');
+      } else {
+        setView('admin-login');
+      }
+    }
+    else if (path === '/admin' || path === '/admin/dashboard') {
+      // GUARD: Cek apakah sudah login
+      if (!adminToken) {
+        setView('home'); // Tendang ke home jika belum login
+        return;
+      }
+      setView('admin-dashboard');
+    }
+    else if (path === '/admin/orders') {
+      // GUARD: Cek apakah sudah login
+      if (!adminToken) {
+        setView('home'); // Tendang ke home jika belum login
+        return;
+      }
+      setView('admin-orders');
+    }
+    else if (path === '/admin/settings') {
+      // GUARD: Cek apakah sudah login
+      if (!adminToken) {
+        setView('home'); // Tendang ke home jika belum login
+        return;
+      }
+      setView('admin-settings');
+    }
+    else if (path === '/admin/users') {
+      // GUARD: Cek apakah sudah login
+      if (!adminToken) {
+        setView('home'); // Tendang ke home jika belum login
+        return;
+      }
+      setView('admin-users');
+    }
+  };
 
   // Verifikasi token saat halaman dimuat
   const verifyToken = useCallback(async () => {
@@ -51,6 +104,25 @@ function App() {
     verifyToken();
   }, [verifyToken]);
 
+  // Handle initial page routing from window.location.pathname on mount
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path && path !== '/') {
+      navigate(path);
+    }
+  }, []);
+
+  // Handle post-login redirection for customers (e.g. from Google OAuth callback)
+  useEffect(() => {
+    if (user && !authLoading) {
+      const redirectPath = sessionStorage.getItem('authRedirect');
+      if (redirectPath) {
+        sessionStorage.removeItem('authRedirect');
+        navigate(redirectPath);
+      }
+    }
+  }, [user, authLoading, navigate]);
+
   const handleLogin = (token, admin) => {
     localStorage.setItem('adminToken', token);
     setAdminToken(token);
@@ -65,44 +137,7 @@ function App() {
     setView('home');
   };
 
-  const navigate = (path) => {
-    if (path === '/') setView('home');
-    else if (path === '/cart') setView('cart');
-    else if (path === '/checkout') setView('checkout');
-    else if (path === '/track' || path === '/orders/track') setView('track');
-    else if (path === '/admin/login') {
-      // Jika sudah login, langsung ke dashboard
-      if (adminToken) {
-        setView('admin-dashboard');
-      } else {
-        setView('admin-login');
-      }
-    }
-    else if (path === '/admin' || path === '/admin/dashboard') {
-      // GUARD: Cek apakah sudah login
-      if (!adminToken) {
-        setView('home'); // Tendang ke home jika belum login
-        return;
-      }
-      setView('admin-dashboard');
-    }
-    else if (path === '/admin/orders') {
-      // GUARD: Cek apakah sudah login
-      if (!adminToken) {
-        setView('home'); // Tendang ke home jika belum login
-        return;
-      }
-      setView('admin-orders');
-    }
-    else if (path === '/admin/settings') {
-      // GUARD: Cek apakah sudah login
-      if (!adminToken) {
-        setView('home'); // Tendang ke home jika belum login
-        return;
-      }
-      setView('admin-settings');
-    }
-  };
+
 
   // Loading state saat verifikasi token
   if (isVerifying) {
@@ -123,6 +158,7 @@ function App() {
         {view === 'cart' && <CartPage navigate={navigate} />}
         {view === 'checkout' && <PaymentPage navigate={navigate} />}
         {view === 'track' && <TrackOrder navigate={navigate} />}
+        {view === 'login' && <UserLoginPage navigate={navigate} />}
         {view === 'admin-login' && <AdminLogin onLogin={handleLogin} navigate={navigate} />}
         {view === 'admin-dashboard' && (
           adminToken 
@@ -137,6 +173,11 @@ function App() {
         {view === 'admin-settings' && (
           adminToken 
             ? <AdminContentSettings navigate={navigate} onLogout={handleLogout} adminToken={adminToken} adminUser={adminUser} /> 
+            : (() => { setView('home'); return null; })()
+        )}
+        {view === 'admin-users' && (
+          adminToken 
+            ? <AdminUsers navigate={navigate} onLogout={handleLogout} adminToken={adminToken} adminUser={adminUser} /> 
             : (() => { setView('home'); return null; })()
         )}
       </>
