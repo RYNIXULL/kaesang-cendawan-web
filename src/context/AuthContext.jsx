@@ -103,7 +103,10 @@ export const AuthProvider = ({ children }) => {
     if (!supabase) return { data: null, error: new Error('Supabase not configured') };
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google'
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin
+        }
       });
       return { data, error };
     } catch (err) {
